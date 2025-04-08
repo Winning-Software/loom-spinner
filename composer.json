@@ -1,0 +1,8 @@
+{
+    "name": "loomlabs/spinner",
+    "autoload": {
+        "psr-4": {
+            "Spinner\\": "src/"
+        }
+    }
+}
