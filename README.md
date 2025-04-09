@@ -1,3 +1,3 @@
 # Loom | Spinner
 
-An environment management application for PHP development.
+An environment management application for PHP developers.
