@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Loom\Spinner\Helper;
+namespace Loom\Spinner\Classes\OS;
 
 class System
 {
