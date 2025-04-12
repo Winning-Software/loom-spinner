@@ -63,6 +63,10 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
                 new SpinnerFilePath(sprintf('data/environments/%s/.env', $input->getArgument('name'))),
                 'projectEnv'
             );
+            $this->filePaths->add(
+                new SpinnerFilePath(sprintf('data/environments/%s/docker-compose.yml', $input->getArgument('name'))),
+                'projectDockerCompose'
+            );
         }
 
         return Command::SUCCESS;
@@ -83,11 +87,10 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
     protected function buildDockerComposeCommand(string $command, bool $daemon = true): string
     {
         return sprintf(
-            'cd %s && docker compose %s --env-file=%s%s',
-            $this->filePaths->get('config')->getAbsolutePath(),
+            'cd %s && docker-compose --env-file=%s %s%s',
+            $this->filePaths->get('projectData')->getAbsolutePath(),
+            $this->filePaths->get('projectEnv')->getAbsolutePath(),
             $command,
-            $this->filePaths->get('projectEnv')->getAbsolutePath()
-                ?? $this->filePaths->get('projectEnv')->getProvidedPath(),
             $daemon ? ' -d' : ''
         );
     }
@@ -118,6 +121,9 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
             'defaultSpinnerConfig' => new SpinnerFilePath('config/spinner.yaml'),
             'envTemplate' => new SpinnerFilePath('config/.template.env'),
             'data' => new SpinnerFilePath('data'),
+            'phpYamlTemplate' => new SpinnerFilePath('config/php.yaml'),
+            'phpFpmDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/Dockerfile'),
+            'phpFpmDataDirectory' => new SpinnerFilePath('config/php-fpm'),
         ]);
     }
 }
