@@ -13,5 +13,5 @@ $application->add(new SpinCommand());
 try {
     $application->run();
 } catch (\Exception $exception) {
-    die();
+    die($exception->getMessage());
 }

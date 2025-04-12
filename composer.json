@@ -17,5 +17,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^12.1"
-    }
+    },
+    "bin": [
+        "bin/spinner"
+    ]
 }
