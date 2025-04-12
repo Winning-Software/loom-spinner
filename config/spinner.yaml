@@ -1,0 +1,4 @@
+options:
+  environment:
+    php:
+      version: 8.4
