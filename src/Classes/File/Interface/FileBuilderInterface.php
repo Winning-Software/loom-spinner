@@ -8,6 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 
 interface FileBuilderInterface
 {
-    public function build(InputInterface $input): void;
+    public function build(InputInterface $input): FileBuilderInterface;
     public function save(): void;
 }

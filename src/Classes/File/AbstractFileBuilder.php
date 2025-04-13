@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Classes\File;
 
-use Loom\Spinner\Classes\Collection\FilePathCollection;
+use Loom\Spinner\Classes\Config\Config;
 use Loom\Spinner\Classes\File\Interface\FileBuilderInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -12,15 +12,16 @@ abstract class AbstractFileBuilder implements FileBuilderInterface
 {
     protected string $content;
 
-    public function __construct(private readonly SpinnerFilePath $path, protected readonly FilePathCollection $filePaths)
+    public function __construct(protected SpinnerFilePath $path, protected Config $config)
     {
+        return $this;
     }
 
-    abstract public function build(InputInterface $input): void;
+    abstract public function build(InputInterface $input): AbstractFileBuilder;
 
     public function save(): void
     {
-        file_put_contents($this->path->getAbsolutePath(), $this->content);
+        file_put_contents($this->path->getProvidedPath(), $this->content);
     }
 
 

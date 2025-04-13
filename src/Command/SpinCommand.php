@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Command;
 
+use Loom\Spinner\Classes\File\PHPDockerFileBuilder;
 use Loom\Spinner\Classes\File\SpinnerFilePath;
 use Loom\Spinner\Classes\OS\PortGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -37,8 +38,19 @@ class SpinCommand extends AbstractSpinnerCommand
         $this
             ->addArgument('name', InputArgument::REQUIRED, 'The name for your Docker container.')
             ->addArgument('path', InputArgument::REQUIRED, 'The absolute path to your projects root directory.')
-            ->addOption('php', null, InputOption::VALUE_REQUIRED, 'The PHP version to use (e.g., 8.0).', $this->config->getDefaultPhpVersionArgument())
-            ->addOption('node-disabled', null, InputOption::VALUE_NONE, 'Set this flag to disable Node.js for your environment.');
+            ->addOption(
+                'php',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The PHP version to use (e.g., 8.0).'
+            )
+            ->addOption(
+                'node-disabled',
+                null,
+                InputOption::VALUE_NONE,
+                'Set this flag to disable Node.js for your environment.'
+            )
+            ->addOption('node', null, InputOption::VALUE_OPTIONAL, 'The Node.js version to use (e.g. 20).');
     }
 
     /**
@@ -55,7 +67,7 @@ class SpinCommand extends AbstractSpinnerCommand
         }
 
         $this->style->success("Spinning up a new development environment...");
-
+        $this->style->text('Creating project data...');
         $this->createProjectData($input);
 
         $command = $this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name')));
@@ -67,13 +79,13 @@ class SpinCommand extends AbstractSpinnerCommand
 
     protected function projectDataExists(): bool
     {
-        if (!$this->filePaths->get('projectData')->exists()) {
+        if ($this->config->getFilePaths()->get('projectData')->exists()) {
             $this->style->warning('Project data already exists. Skipping new build.');
 
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -92,7 +104,7 @@ class SpinCommand extends AbstractSpinnerCommand
      */
     private function createProjectDataDirectory(): void
     {
-        $projectData = $this->filePaths->get('projectData');
+        $projectData = $this->config->getFilePaths()->get('projectData');
 
         if (!$projectData instanceof  SpinnerFilePath) {
             throw new \Exception('Invalid project data directory provided.');
@@ -106,7 +118,7 @@ class SpinCommand extends AbstractSpinnerCommand
      */
     private function createEnvironmentFile(InputInterface $input): void
     {
-        $projectEnv = $this->filePaths->get('projectEnv');
+        $projectEnv = $this->config->getFilePaths()->get('projectEnv');
 
         if (!$projectEnv instanceof SpinnerFilePath) {
             throw new \Exception('Invalid project environment file provided.');
@@ -115,8 +127,8 @@ class SpinCommand extends AbstractSpinnerCommand
         file_put_contents(
             $projectEnv->getProvidedPath(),
             sprintf(
-                file_get_contents($this->filePaths->get('envTemplate')->getAbsolutePath()),
-                $this->filePaths->get('project')->getAbsolutePath(),
+                file_get_contents($this->config->getFilePaths()->get('envTemplate')->getAbsolutePath()),
+                $this->config->getFilePaths()->get('project')->getAbsolutePath(),
                 $input->getArgument('name'),
                 $input->getOption('php'),
                 $this->getPort('php'),
@@ -129,8 +141,8 @@ class SpinCommand extends AbstractSpinnerCommand
      */
     private function buildDockerComposeFile(): void
     {
-        $projectData = $this->filePaths->get('projectData');
-        $projectDockerCompose = $this->filePaths->get('projectDockerCompose');
+        $projectData = $this->config->getFilePaths()->get('projectData');
+        $projectDockerCompose = $this->config->getFilePaths()->get('projectDockerCompose');
 
         if (!$projectData instanceof  SpinnerFilePath || !$projectDockerCompose instanceof SpinnerFilePath) {
             throw new \Exception('Invalid project data directory provided.');
@@ -141,7 +153,7 @@ class SpinCommand extends AbstractSpinnerCommand
         }
         file_put_contents(
             $projectDockerCompose->getProvidedPath(),
-            file_get_contents($this->filePaths->get('phpYamlTemplate')->getAbsolutePath())
+            file_get_contents($this->config->getFilePaths()->get('phpYamlTemplate')->getAbsolutePath())
         );
     }
 
@@ -150,25 +162,7 @@ class SpinCommand extends AbstractSpinnerCommand
      */
     private function buildDockerfile(InputInterface $input): void
     {
-        $phpFpmDockerfileTemplate = file_get_contents($this->filePaths->get('phpFpmDockerfileTemplate')->getAbsolutePath());
-        $phpFpmDockerfileTemplate = str_replace('${PHP_VERSION}', $input->getOption('php'), $phpFpmDockerfileTemplate);
-
-        if ($this->isNodeEnabled($input)) {
-            // Add contents of Node.Dockerfile from /config/php-fpm/Node.Dockerfile
-            $phpFpmDockerfileTemplate .= "\r\n\r\n" . file_get_contents($this->filePaths->get('nodeDockerfileTemplate')->getAbsolutePath());
-            $phpFpmDockerfileTemplate = str_replace('${NODE_VERSION}', (string) $this->getEnvironmentOption('node', 'version'), $phpFpmDockerfileTemplate);
-        }
-
-        $projectDataPath = $this->filePaths->get('projectData');
-
-        if (!$projectDataPath instanceof SpinnerFilePath) {
-            return;
-        }
-
-        file_put_contents(
-            $projectDataPath->getProvidedPath() . '/php-fpm/Dockerfile',
-            $phpFpmDockerfileTemplate
-        );
+        (new PHPDockerFileBuilder($this->config))->build($input)->save();
     }
 
     private function getPort(string $service): int

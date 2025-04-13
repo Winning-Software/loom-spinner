@@ -19,17 +19,13 @@ use Symfony\Component\Yaml\Yaml;
 class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
 {
     protected Config $config;
-    protected FilePathCollection $filePaths;
-    protected string $rootDirectory;
     protected SymfonyStyle $style;
     protected System $system;
 
     public function __construct()
     {
-        $this->rootDirectory = dirname(__DIR__, 2);
         $this->system = new System();
-        $this->setFilePaths();
-        $this->config = new Config($this->filePaths);
+        $this->config = new Config();
 
         parent::__construct();
     }
@@ -55,59 +51,15 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
         return Command::SUCCESS;
     }
 
-    /**
-     * @throws \Exception
-     */
-    protected function getDefaultConfig()
-    {
-        if (!$this->filePaths->get('defaultSpinnerConfig')?->exists()) {
-            throw new \Exception('Default spinner configuration file not found.');
-        }
-
-        return Yaml::parseFile($this->filePaths->get('defaultSpinnerConfig')->getAbsolutePath())['options'] ?? null;
-    }
-
     protected function buildDockerComposeCommand(string $command, bool $daemon = true): string
     {
         return sprintf(
             'cd %s && docker-compose --env-file=%s %s%s',
-            $this->filePaths->get('projectData')->getAbsolutePath(),
-            $this->filePaths->get('projectEnv')->getAbsolutePath(),
+            $this->config->getFilePaths()->get('projectData')->getAbsolutePath(),
+            $this->config->getFilePaths()->get('projectEnv')->getAbsolutePath(),
             $command,
             $daemon ? ' -d' : ''
         );
-    }
-
-    /**
-     * @throws \Exception
-     */
-    protected function getEnvironmentOption(string $service, string $option): mixed
-    {
-        if ($this->filePaths->get('projectCustomConfig')?->exists()) {
-            $config = Yaml::parseFile(
-                $this->filePaths->get('projectCustomConfig')->getAbsolutePath()
-            )['options']['environment'] ?? null;
-
-            if ($config) {
-                if (isset($config[$service][$option])) {
-                    return $config[$service][$option];
-                }
-            }
-        }
-
-        return $this->getDefaultConfig()['environment'][$service][$option] ?? null;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    protected function isNodeEnabled(InputInterface $input): bool
-    {
-        if ($input->getOption('node-disabled')) {
-            return true;
-        }
-
-        return $this->getEnvironmentOption('node', 'enabled');
     }
 
     private function validatePathArgument(InputInterface $input): bool
@@ -121,7 +73,7 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
                 return false;
             }
 
-            $this->filePaths->add($projectDirectory, 'project');
+            $this->config->addFilePath($projectDirectory, 'project');
         }
 
         return true;
@@ -130,20 +82,32 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
     private function validateNameArgument(InputInterface $input): void
     {
         if ($input->hasArgument('name')) {
-            $this->filePaths->add(
+            $this->config->addFilePath(
                 new SpinnerFilePath(sprintf('data/environments/%s', $input->getArgument('name'))),
                 'projectData'
             );
-            $this->filePaths->add(
+            $this->config->addFilePath(
                 new SpinnerFilePath(sprintf('data/environments/%s/.env', $input->getArgument('name'))),
                 'projectEnv'
             );
-            $this->filePaths->add(
+            $this->config->addFilePath(
                 new SpinnerFilePath(sprintf('data/environments/%s/docker-compose.yml', $input->getArgument('name'))),
                 'projectDockerCompose'
             );
-            $this->filePaths->add(
-                new FilePath($this->filePaths->get('project')->getAbsolutePath() . DIRECTORY_SEPARATOR . 'spinner.yaml'),
+            $this->config->addFilePath(
+                new SpinnerFilePath(sprintf('data/environments/%s/php-fpm', $input->getArgument('name'))),
+                'projectPhpFpmDirectory'
+            );
+            $this->config->addFilePath(
+                new SpinnerFilePath(sprintf('data/environments/%s/php-fpm/Dockerfile', $input->getArgument('name'))),
+                'projectPhpFpmDockerfile'
+            );
+            $this->config->addFilePath(
+                new SpinnerFilePath(sprintf('data/environments/%s/php-fpm/Node.Dockerfile', $input->getArgument('name'))),
+                'projectPhpFpmNodeDockerfile'
+            );
+            $this->config->addFilePath(
+                new FilePath($this->config->getFilePaths()->get('project')->getAbsolutePath() . DIRECTORY_SEPARATOR . 'spinner.yaml'),
                 'projectCustomConfig'
             );
         }
@@ -152,19 +116,5 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
     private function setStyle(InputInterface $input, OutputInterface $output): void
     {
         $this->style = new SymfonyStyle($input, $output);
-    }
-
-    private function setFilePaths(): void
-    {
-        $this->filePaths = new FilePathCollection([
-            'config' => new SpinnerFilePath('config'),
-            'defaultSpinnerConfig' => new SpinnerFilePath('config/spinner.yaml'),
-            'envTemplate' => new SpinnerFilePath('config/.template.env'),
-            'data' => new SpinnerFilePath('data'),
-            'phpYamlTemplate' => new SpinnerFilePath('config/php.yaml'),
-            'phpFpmDataDirectory' => new SpinnerFilePath('config/php-fpm'),
-            'phpFpmDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/Dockerfile'),
-            'nodeDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/Node.Dockerfile'),
-        ]);
     }
 }
