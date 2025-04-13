@@ -2,7 +2,7 @@
 
 An environment management application for PHP developers.
 
-## Dev Notes
+# Dev Notes
 
 **Argument priority:**
 
@@ -10,25 +10,57 @@ An environment management application for PHP developers.
 - Any set within `{projectDirectory}/spinner.yaml`
 - Fall back to `/config/spinner.yaml`
 
-## Commands
+# Commands
 
-### `spin:up`
+## Command: `spin:up`
 
-#### Arguments
+Creates a new PHP development environment and mounts your project files.
 
-- `name` - **Required**: The name for your Docker containers.
-- `path` - **Required**: The **absolute path** to your project root directory.
-- `php` - **Optional**: If passed, sets the PHP version used by your container. Can be overridden 
-by creating a `spinner.yaml` file in your project root directory and defining the key `options.environment.php.version`
+### Arguments
 
-#### Options
+> #### Argument: name 
+>
+> **Required?** ✅
+> 
+> The name of your Docker containers. Your containers will spin up with the name {name}-{service}-1 i.e.
+> 
+> `spinner spin:up name=test path=/path`
+> 
+> Results in containers named `test-php-1` and `test-nginx-1`
 
-- `disable-node` - **Optional**: Disables Node. Can also define the key `options.environment.node.enabled` in your 
-`spinner.yaml` file.
-- `disable-server` - **Optional:** Does not install a web server.
+> #### Argument: path
+> 
+> **Required?** ✅
+> 
+> The **absolute path** on your system to the project you want to create containers for.
 
-## Example Usage
+### Options
 
-`spinner spin:up name=test path=/abs/path/to/project`
+> #### Option: --php
+> 
+> **Required?** ❌
+> 
+> Defines the PHP version that your container will use. You can omit this flag and set the PHP version inside your
+> projects `spinner.yaml` file. Otherwise, will use the default value found in `config/spinner.yaml`
 
-`spinner spin:up test /abs/path/to/project 8.4 --disable-server --disable-node`
+> #### Option: --node
+> 
+> **Required?** ❌
+> 
+> Set which version of Node to install in your container. Is ignored if the `--disable-node` flag is
+> passed, or if Node is disabled in your projects `spinner.yaml` file. Equivalent to setting `options.environment.node.version = x`
+> in your projects Spinner config.
+
+> #### Option: --disable-node
+> 
+> **Required?** ❌
+> 
+> Disables Node for your environment, so it isn't included in your PHP container. Equivalent to setting `options.environment.node.enabled = false`
+> in your Spinner config.
+
+> #### Option: --disable-server
+> 
+> **Required?** ❌
+> 
+> Does not install a webserver (so no Nginx). Useful if you just need a PHP container to run 
+> unit tests or something.
