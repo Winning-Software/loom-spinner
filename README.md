@@ -69,7 +69,8 @@ Creates a new PHP development environment and mounts your project files.
 > 
 > **Required?** ❌
 > 
-> Do not install XDebug in your environment.
+> Do not install XDebug in your environment. Equivalent to setting `options.environment.php.xdebug = false`
+> in your project Spinner config.
 
 ## XDebug Setup
 
@@ -78,7 +79,7 @@ should be fairly universal.
 
 ### Server Settings
 
-- `File` -> `Settings` (`Preferences` on MacOS)
+- `File` -> `Settings`
 - `PHP` -> `Servers` -> `+`
 - Give your "server" a name and use the values shown below.
 
@@ -98,3 +99,6 @@ should be fairly universal.
 - Give it a name
 - Use the server you created before
 - Use **SPINNER** as IDE key
+
+Make sure you start listening when you want to debug by clicking the little bug icon in the 
+top right (by default) in PHPStorm.
