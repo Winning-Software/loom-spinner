@@ -23,5 +23,12 @@ by creating a `spinner.yaml` file in your project root directory and defining th
 
 #### Options
 
-- `node-disabled` - **Optional**: Disables Node. Can also define the key `options.environment.node.enabled` in your 
+- `disable-node` - **Optional**: Disables Node. Can also define the key `options.environment.node.enabled` in your 
 `spinner.yaml` file.
+- `disable-server` - **Optional:** Does not install a web server.
+
+## Example Usage
+
+`spinner spin:up name=test path=/abs/path/to/project`
+
+`spinner spin:up test /abs/path/to/project 8.4 --disable-server --disable-node`
