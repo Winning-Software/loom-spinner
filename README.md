@@ -22,11 +22,11 @@ Creates a new PHP development environment and mounts your project files.
 >
 > **Required?** ✅
 > 
-> The name of your Docker containers. Your containers will spin up with the name {name}-{service}-1 i.e.
+> The name of your Docker containers. Your containers will spin up with the name {name}-{service} i.e.
 > 
 > `spinner spin:up name=test path=/path`
 > 
-> Results in containers named `test-php-1` and `test-nginx-1`
+> Results in containers named `test-php` and `test-nginx`
 
 > #### Argument: path
 > 

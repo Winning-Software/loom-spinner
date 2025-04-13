@@ -11,3 +11,4 @@ services:
       - ${PROJECT_DIRECTORY}:/var/www/html:cached
     ports:
       - ${PHP_PORT}:9003
+    container_name: ${PROJECT_NAME}-php

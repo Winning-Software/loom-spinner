@@ -7,3 +7,4 @@ services:
     volumes:
       - ${PROJECT_DIRECTORY}:/var/www/html:cached
       - ./nginx/conf.d:/etc/nginx/conf.d
+    container_name: ${PROJECT_NAME}-nginx

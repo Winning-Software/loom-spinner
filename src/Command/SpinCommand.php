@@ -82,12 +82,17 @@ class SpinCommand extends AbstractSpinnerCommand
         }
 
         $this->style->success("Spinning up a new development environment...");
+
         $this->style->text('Creating project data...');
         $this->createProjectData($input);
+        $this->style->success('Project data created.');
 
+        $this->style->text('Building Docker images...');
         $command = $this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name')));
 
         passthru($command);
+
+        $this->style->success('Docker images built.');
 
         return Command::SUCCESS;
     }
