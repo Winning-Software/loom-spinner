@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Command;
 
+use Loom\Spinner\Classes\File\DockerComposeFileBuilder;
 use Loom\Spinner\Classes\File\PHPDockerFileBuilder;
 use Loom\Spinner\Classes\File\SpinnerFilePath;
 use Loom\Spinner\Classes\OS\PortGenerator;
@@ -70,9 +71,9 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->style->text('Creating project data...');
         $this->createProjectData($input);
 
-        $command = $this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name')));
-
-        passthru($command);
+//        $command = $this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name')));
+//
+//        passthru($command);
 
         return Command::SUCCESS;
     }
@@ -95,7 +96,7 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $this->createProjectDataDirectory();
         $this->createEnvironmentFile($input);
-        $this->buildDockerComposeFile();
+        $this->buildDockerComposeFile($input);
         $this->buildDockerfile($input);
     }
 
@@ -139,22 +140,27 @@ class SpinCommand extends AbstractSpinnerCommand
     /**
      * @throws \Exception
      */
-    private function buildDockerComposeFile(): void
+    private function buildDockerComposeFile(InputInterface $input): void
+    {
+        $this->createProjectPhpFpmDirectory();
+
+        (new DockerComposeFileBuilder($this->config))->build($input)->save();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function createProjectPhpFpmDirectory(): void
     {
         $projectData = $this->config->getFilePaths()->get('projectData');
-        $projectDockerCompose = $this->config->getFilePaths()->get('projectDockerCompose');
 
-        if (!$projectData instanceof  SpinnerFilePath || !$projectDockerCompose instanceof SpinnerFilePath) {
+        if (!$projectData instanceof  SpinnerFilePath) {
             throw new \Exception('Invalid project data directory provided.');
         }
 
         if (!file_exists($projectData->getProvidedPath() . '/php-fpm')) {
             mkdir($projectData->getProvidedPath() . '/php-fpm', 0777, true);
         }
-        file_put_contents(
-            $projectDockerCompose->getProvidedPath(),
-            file_get_contents($this->config->getFilePaths()->get('phpYamlTemplate')->getAbsolutePath())
-        );
     }
 
     /**
