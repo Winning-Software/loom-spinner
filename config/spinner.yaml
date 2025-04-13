@@ -2,6 +2,7 @@ options:
   environment:
     php:
       version: 8.4
+      xdebug: true
     node:
       enabled: true
       version: 23

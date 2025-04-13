@@ -34,8 +34,18 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
         $this->content = str_replace('${PHP_VERSION}', (string) $this->config->getPhpVersion($input), $this->content);
 
         if ($this->config->isNodeEnabled($input)) {
-            $this->content .= "\r\n\r\n" . file_get_contents($this->config->getFilePaths()->get('nodeDockerfileTemplate')->getAbsolutePath());
+            $this->addNewLine();
+            $this->content .= file_get_contents($this->config->getFilePaths()->get('nodeDockerfileTemplate')->getAbsolutePath());
             $this->content = str_replace('${NODE_VERSION}', (string) $this->config->getNodeVersion($input), $this->content);
+        }
+
+        if ($this->config->isXdebugEnabled($input)) {
+            $this->addNewLine();
+            $this->content .= file_get_contents($this->config->getFilePaths()->get('xdebugDockerfileTemplate')->getAbsolutePath());
+            file_put_contents(
+                (new SpinnerFilePath(sprintf('data/environments/%s/php-fpm/xdebug.ini', $input->getArgument('name'))))->getProvidedPath(),
+                file_get_contents($this->config->getFilePaths()->get('xdebugIniTemplate')->getAbsolutePath())
+            );
         }
 
         return $this;

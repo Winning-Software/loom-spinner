@@ -59,6 +59,12 @@ class SpinCommand extends AbstractSpinnerCommand
                 InputOption::VALUE_NONE,
                 'Set this flag to disable Node.js for your environment.'
             )
+            ->addOption(
+                'disable-xdebug',
+                null,
+                InputOption::VALUE_NONE,
+                'Set this flag to disable XDebug for your environment.'
+            )
             ->addOption('node', null, InputOption::VALUE_OPTIONAL, 'The Node.js version to use (e.g. 20).');
     }
 

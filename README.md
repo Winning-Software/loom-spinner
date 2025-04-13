@@ -64,3 +64,37 @@ Creates a new PHP development environment and mounts your project files.
 > 
 > Does not install a webserver (so no Nginx). Useful if you just need a PHP container to run 
 > unit tests or something.
+
+> #### Option: --disable-xdebug
+> 
+> **Required?** ❌
+> 
+> Do not install XDebug in your environment.
+
+## XDebug Setup
+
+These instructions are for PHPStorm. I don't know about working with other IDE's, although they
+should be fairly universal.
+
+### Server Settings
+
+- `File` -> `Settings` (`Preferences` on MacOS)
+- `PHP` -> `Servers` -> `+`
+- Give your "server" a name and use the values shown below.
+
+| Setting                 | Value                                                                                                          |
+|-------------------------|----------------------------------------------------------------------------------------------------------------|
+| Host                    | 127.0.0.1                                                                                                      |
+| Port                    | **Local** port **PHP** container is running on. i.e. if your docker container shows 52033:9003, use **52033**. |
+| Debugger                | Xdebug                                                                                                         |
+| Use path mappings?      | ✅                                                                                                              |
+| File/Directory          | Select **your project root**                                                                                   |
+| Absolute path on server | /var/www/html                                                                                                  |
+
+### Remote Debugger
+
+- `Run` -> `Edit Configurations`
+- `+` -> `PHP Remote Debug`
+- Give it a name
+- Use the server you created before
+- Use **SPINNER** as IDE key

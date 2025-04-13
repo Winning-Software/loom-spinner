@@ -74,6 +74,18 @@ class Config
     /**
      * @throws \Exception
      */
+    public function isXDebugEnabled(InputInterface $input): bool
+    {
+        if ($input->getOption('disable-xdebug')) {
+            return false;
+        }
+
+        return $this->getEnvironmentOption('php', 'xdebug');
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function getNodeVersion(InputInterface $input): ?int
     {
         if ($input->getOption('node')) {
@@ -126,6 +138,8 @@ class Config
             DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE => new SpinnerFilePath(DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE),
             DataPathInterface::CONFIG_NGINX_DOCKERFILE => new SpinnerFilePath(DataPathInterface::CONFIG_NGINX_DOCKERFILE),
             'nodeDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/Node.Dockerfile'),
+            'xdebugIniTemplate' => new SpinnerFilePath('config/php-fpm/xdebug.ini'),
+            'xdebugDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/XDebug.Dockerfile'),
         ]);
     }
 }
