@@ -2,3 +2,6 @@ options:
   environment:
     php:
       version: 8.4
+    node:
+      enabled: true
+      version: 20

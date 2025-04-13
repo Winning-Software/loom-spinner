@@ -13,16 +13,6 @@ RUN apt-get -qq update && apt-get -qq install -y \
     bash \
     dnsutils
 
-#ENV NVM_DIR /root/.nvm
-#ENV NODE_VERSION 20
-#
-#RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
-#    && . "$NVM_DIR/nvm.sh" \
-#    && nvm install $NODE_VERSION \
-#    && nvm use $NODE_VERSION
-#
-#COPY --from=node:20 /usr/local/bin/npx /usr/local/bin/npx
-
 RUN docker-php-ext-configure intl > /dev/null
 RUN docker-php-ext-install mysqli pdo pdo_mysql sockets intl exif bcmath > /dev/null
 
