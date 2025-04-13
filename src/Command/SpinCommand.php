@@ -131,7 +131,7 @@ class SpinCommand extends AbstractSpinnerCommand
                 file_get_contents($this->config->getFilePaths()->get('envTemplate')->getAbsolutePath()),
                 $this->config->getFilePaths()->get('project')->getAbsolutePath(),
                 $input->getArgument('name'),
-                $input->getOption('php'),
+                $this->config->getPhpVersion($input),
                 $this->getPort('php'),
             )
         );
@@ -171,8 +171,8 @@ class SpinCommand extends AbstractSpinnerCommand
         (new PHPDockerFileBuilder($this->config))->build($input)->save();
     }
 
-    private function getPort(string $service): int
+    private function getPort(string $service): ?int
     {
-        return $this->ports[$service] ?? $this->portGenerator->generateRandomPort();
+        return $this->ports[$service];
     }
 }

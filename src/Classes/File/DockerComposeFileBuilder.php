@@ -14,7 +14,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
      */
     public function __construct(Config $config)
     {
-        $projectDockerCompose = $this->config->getFilePaths()->get('projectDockerCompose');
+        $projectDockerCompose = $config->getFilePaths()->get('projectDockerCompose');
 
         if (!$projectDockerCompose instanceof SpinnerFilePath) {
             throw new \Exception('Project Docker Compose file path not found.');
