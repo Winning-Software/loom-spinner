@@ -95,16 +95,12 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
                 'projectDockerCompose'
             );
             $this->config->addFilePath(
-                new SpinnerFilePath(sprintf('data/environments/%s/php-fpm', $input->getArgument('name'))),
-                'projectPhpFpmDirectory'
-            );
-            $this->config->addFilePath(
                 new SpinnerFilePath(sprintf('data/environments/%s/php-fpm/Dockerfile', $input->getArgument('name'))),
                 'projectPhpFpmDockerfile'
             );
             $this->config->addFilePath(
-                new SpinnerFilePath(sprintf('data/environments/%s/php-fpm/Node.Dockerfile', $input->getArgument('name'))),
-                'projectPhpFpmNodeDockerfile'
+                new SpinnerFilePath(sprintf('data/environments/%s/nginx/Dockerfile', $input->getArgument('name'))),
+                'projectNginxDockerfile'
             );
             $this->config->addFilePath(
                 new FilePath($this->config->getFilePaths()->get('project')->getAbsolutePath() . DIRECTORY_SEPARATOR . 'spinner.yaml'),

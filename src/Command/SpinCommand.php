@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Loom\Spinner\Command;
 
 use Loom\Spinner\Classes\File\DockerComposeFileBuilder;
+use Loom\Spinner\Classes\File\NginxDockerFileBuilder;
 use Loom\Spinner\Classes\File\PHPDockerFileBuilder;
 use Loom\Spinner\Classes\File\SpinnerFilePath;
 use Loom\Spinner\Classes\OS\PortGenerator;
@@ -26,6 +27,7 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->portGenerator = new PortGenerator();
         $this->ports = [
             'php' => $this->portGenerator->generateRandomPort(),
+            'nginx' => $this->portGenerator->generateRandomPort(),
         ];
 
         parent::__construct();
@@ -46,7 +48,13 @@ class SpinCommand extends AbstractSpinnerCommand
                 'The PHP version to use (e.g., 8.0).'
             )
             ->addOption(
-                'node-disabled',
+                'disable-node',
+                null,
+                InputOption::VALUE_NONE,
+                'Set this flag to disable Node.js for your environment.'
+            )
+            ->addOption(
+                'disable-server',
                 null,
                 InputOption::VALUE_NONE,
                 'Set this flag to disable Node.js for your environment.'
@@ -71,9 +79,9 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->style->text('Creating project data...');
         $this->createProjectData($input);
 
-//        $command = $this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name')));
-//
-//        passthru($command);
+        $command = $this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name')));
+
+        passthru($command);
 
         return Command::SUCCESS;
     }
@@ -97,7 +105,7 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->createProjectDataDirectory();
         $this->createEnvironmentFile($input);
         $this->buildDockerComposeFile($input);
-        $this->buildDockerfile($input);
+        $this->buildDockerfiles($input);
     }
 
     /**
@@ -133,6 +141,7 @@ class SpinCommand extends AbstractSpinnerCommand
                 $input->getArgument('name'),
                 $this->config->getPhpVersion($input),
                 $this->getPort('php'),
+                $this->getPort('nginx'),
             )
         );
     }
@@ -144,7 +153,20 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $this->createProjectPhpFpmDirectory();
 
+        if ($this->config->isServerEnabled($input)) {
+            $this->createProjectNginxDirectory();
+            (new NginxDockerFileBuilder($this->config))->build($input)->save();
+        }
+
         (new DockerComposeFileBuilder($this->config))->build($input)->save();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function buildDockerfiles(InputInterface $input): void
+    {
+        (new PHPDockerFileBuilder($this->config))->build($input)->save();
     }
 
     /**
@@ -166,9 +188,17 @@ class SpinCommand extends AbstractSpinnerCommand
     /**
      * @throws \Exception
      */
-    private function buildDockerfile(InputInterface $input): void
+    private function createProjectNginxDirectory(): void
     {
-        (new PHPDockerFileBuilder($this->config))->build($input)->save();
+        $projectData = $this->config->getFilePaths()->get('projectData');
+
+        if (!$projectData instanceof  SpinnerFilePath) {
+            throw new \Exception('Invalid project data directory provided.');
+        }
+
+        if (!file_exists($projectData->getProvidedPath() . '/nginx')) {
+            mkdir($projectData->getProvidedPath() . '/nginx', 0777, true);
+        }
     }
 
     private function getPort(string $service): ?int

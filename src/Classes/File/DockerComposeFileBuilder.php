@@ -23,12 +23,35 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         return parent::__construct($projectDockerCompose, $config);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function build(InputInterface $input): DockerComposeFileBuilder
     {
         $this->content = file_get_contents(
             $this->config->getFilePaths()->get('phpYamlTemplate')->getAbsolutePath()
         );
 
+        if ($this->config->isServerEnabled($input)) {
+            $this->addNginxConfig();
+        }
+
         return $this;
+    }
+
+    private function addNginxConfig(): void
+    {
+        $this->content .= str_replace(
+            'services:',
+            '',
+            file_get_contents(
+                $this->config->getFilePaths()->get('nginxYamlTemplate')->getAbsolutePath()
+            )
+        );
+        $this->content = str_replace(
+            './nginx/conf.d',
+            (new SpinnerFilePath('config/nginx/conf.d'))->getAbsolutePath(),
+            $this->content
+        );
     }
 }

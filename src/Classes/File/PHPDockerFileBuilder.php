@@ -44,7 +44,7 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
     private function setInitialContent(): void
     {
         $this->content = file_get_contents(
-            $this->config->getFilePaths()->get(DataPathInterface::CONFIG_PHP_FPM_DIRECTORY)->getAbsolutePath()
+            $this->config->getFilePaths()->get(DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE)->getAbsolutePath()
         );
     }
 }

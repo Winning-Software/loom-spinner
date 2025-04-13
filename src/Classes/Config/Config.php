@@ -52,11 +52,23 @@ class Config
      */
     public function isNodeEnabled(InputInterface $input): bool
     {
-        if ($input->getOption('node-disabled')) {
+        if ($input->getOption('disable-node')) {
             return false;
         }
 
         return $this->getEnvironmentOption('node', 'enabled');
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function isServerEnabled(InputInterface $input): bool
+    {
+        if ($input->getOption('disable-server')) {
+            return false;
+        }
+
+        return $this->getEnvironmentOption('server', 'enabled');
     }
 
     /**
@@ -109,8 +121,10 @@ class Config
             'envTemplate' => new SpinnerFilePath('config/.template.env'),
             'data' => new SpinnerFilePath('data'),
             'phpYamlTemplate' => new SpinnerFilePath('config/php.yaml'),
+            'nginxYamlTemplate' => new SpinnerFilePath('config/nginx.yaml'),
             'phpFpmDataDirectory' => new SpinnerFilePath('config/php-fpm'),
-            DataPathInterface::CONFIG_PHP_FPM_DIRECTORY => new SpinnerFilePath(DataPathInterface::CONFIG_PHP_FPM_DIRECTORY),
+            DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE => new SpinnerFilePath(DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE),
+            DataPathInterface::CONFIG_NGINX_DOCKERFILE => new SpinnerFilePath(DataPathInterface::CONFIG_NGINX_DOCKERFILE),
             'nodeDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/Node.Dockerfile'),
         ]);
     }
