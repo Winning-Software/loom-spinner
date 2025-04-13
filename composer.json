@@ -11,8 +11,8 @@
         }
     },
     "require": {
-        "loomlabs/utility.collection": "^1.0",
-        "loomlabs/utility.filepath": "^1.1",
+        "loomlabs/utility.collection": "^1.1",
+        "loomlabs/utility.filepath": "^1.2.1",
         "symfony/console": "^7.2",
         "symfony/yaml": "^7.2"
     },

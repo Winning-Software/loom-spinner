@@ -57,7 +57,7 @@ class SpinCommand extends AbstractSpinnerCommand
                 'disable-server',
                 null,
                 InputOption::VALUE_NONE,
-                'Set this flag to disable Node.js for your environment.'
+                'Set this flag to not include a web server for your environment.'
             )
             ->addOption(
                 'disable-xdebug',
