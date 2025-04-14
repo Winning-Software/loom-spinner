@@ -32,6 +32,10 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
             $this->config->getFilePaths()->get('phpYamlTemplate')->getAbsolutePath()
         );
 
+        if ($this->config->isDatabaseEnabled($input) && in_array($this->config->getDatabaseDriver($input), ['sqlite3', 'sqlite'])) {
+            $this->addSqliteDatabaseConfig();
+        }
+
         if ($this->config->isServerEnabled($input)) {
             $this->addNginxConfig();
         }
@@ -53,5 +57,12 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
             (new SpinnerFilePath('config/nginx/conf.d'))->getAbsolutePath(),
             $this->content
         );
+    }
+
+    private function addSqliteDatabaseConfig(): void
+    {
+        $sqlLiteConfig = file_get_contents((new SpinnerFilePath('config/sqlite.yaml'))->getAbsolutePath());
+        $sqlLiteConfig = str_replace('volumes:', '', $sqlLiteConfig);
+        $this->content .= $sqlLiteConfig;
     }
 }

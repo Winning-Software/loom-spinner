@@ -1,0 +1,2 @@
+volumes:
+      - ${PROJECT_DIRECTORY}/sqlite:/var/www/html/sqlite:cached

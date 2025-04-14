@@ -86,6 +86,30 @@ class Config
     /**
      * @throws \Exception
      */
+    public function isDatabaseEnabled(InputInterface $input): bool
+    {
+        if ($input->getOption('disable-database')) {
+            return false;
+        }
+
+        return $this->getEnvironmentOption('database', 'enabled');
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getDatabaseDriver(InputInterface $input): ?string
+    {
+        if ($input->getOption('database')) {
+            return (string) $input->getOption('database');
+        }
+
+        return (string) $this->getEnvironmentOption('database', 'driver');
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function getNodeVersion(InputInterface $input): ?int
     {
         if ($input->getOption('node')) {

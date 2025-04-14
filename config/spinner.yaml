@@ -8,3 +8,6 @@ options:
       version: 23
     server:
       enabled: true
+    database:
+      enabled: true
+      driver: sqlite3

@@ -38,6 +38,11 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
             file_get_contents($this->config->getFilePaths()->get('opcacheIniTemplate')->getAbsolutePath())
         );
 
+        if ($this->config->isDatabaseEnabled($input) && in_array($this->config->getDatabaseDriver($input), ['sqlite3', 'sqlite'])) {
+            $this->addNewLine();
+            $this->content .= file_get_contents((new SpinnerFilePath('config/php-fpm/Sqlite.Dockerfile'))->getAbsolutePath());
+        }
+
         if ($this->config->isNodeEnabled($input)) {
             $this->addNewLine();
             $this->content .= file_get_contents($this->config->getFilePaths()->get('nodeDockerfileTemplate')->getAbsolutePath());

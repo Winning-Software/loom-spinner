@@ -7,8 +7,8 @@ services:
     working_dir: /var/www/html
     extra_hosts:
       - host.docker.internal:host-gateway
-    volumes:
-      - ${PROJECT_DIRECTORY}:/var/www/html:cached
     ports:
       - ${PHP_PORT}:9003
     container_name: ${PROJECT_NAME}-php
+    volumes:
+      - ${PROJECT_DIRECTORY}:/var/www/html:cached

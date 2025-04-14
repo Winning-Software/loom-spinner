@@ -15,7 +15,7 @@ RUN apt-get -qq update && apt-get -qq install -y \
     > /dev/null 2>&1
 
 RUN docker-php-ext-configure intl > /dev/null 2>&1
-RUN docker-php-ext-install mysqli pdo pdo_mysql sockets intl exif bcmath > /dev/null
+RUN docker-php-ext-install sockets intl exif bcmath > /dev/null 2>&1
 RUN docker-php-ext-install opcache > /dev/null 2>&1
 COPY ./opcache.ini "${PHP_INI_DIR}/conf.d"
 

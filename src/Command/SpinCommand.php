@@ -65,6 +65,13 @@ class SpinCommand extends AbstractSpinnerCommand
                 InputOption::VALUE_NONE,
                 'Set this flag to disable XDebug for your environment.'
             )
+            ->addOption(
+                'disable-database',
+                null,
+                InputOption::VALUE_NONE,
+                'Set this flag to not include a database for your environment.'
+            )
+            ->addOption('database', null, InputOption::VALUE_REQUIRED, 'The type of database to use (e.g., mysql, postgresql, sqlite).', null, ['sqlite'])
             ->addOption('node', null, InputOption::VALUE_OPTIONAL, 'The Node.js version to use (e.g. 20).');
     }
 
