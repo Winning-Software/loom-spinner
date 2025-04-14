@@ -48,29 +48,44 @@ Creates a new PHP development environment and mounts your project files.
 > **Required?** ❌
 > 
 > Set which version of Node to install in your container. Is ignored if the `--disable-node` flag is
-> passed, or if Node is disabled in your projects `spinner.yaml` file. Equivalent to setting `options.environment.node.version = x`
-> in your projects Spinner config.
+> passed, or if Node is disabled in your projects `spinner.yaml` file. Equivalent to setting 
+> `options.environment.node.version: x` in your projects Spinner config.
+
+> #### Option: --database
+> 
+> **Required?** ❌
+> 
+> Set which database driver to use with your environment. The default (and currently only) database driver is `sqlite3`. 
+> Accepted values are currently `sqlite` and `sqlite3`. If using the default, SQLite is installed inside your PHP 
+> container and a mapping created to the `/sqlite` directory in your project. This argument is ignored if 
+> `--disabled-database` is set.
+
+> #### Option: --disable-database
+>
+> **Required?** ❌
+>
+> Does not install a database with your environment. Equivalent to setting `options.environment.database.enabled: false` 
+> in your Spinner config.
 
 > #### Option: --disable-node
 > 
 > **Required?** ❌
 > 
-> Disables Node for your environment, so it isn't included in your PHP container. Equivalent to setting `options.environment.node.enabled = false`
-> in your Spinner config.
+> Disables Node for your environment, so it isn't included in your PHP container. Equivalent to setting 
+> `options.environment.node.enabled: false` in your Spinner config.
 
 > #### Option: --disable-server
 > 
 > **Required?** ❌
 > 
-> Does not install a webserver (so no Nginx). Useful if you just need a PHP container to run 
-> unit tests or something.
+> Does not install a webserver (so no Nginx). Useful if you just need a PHP container to run unit tests or something.
 
 > #### Option: --disable-xdebug
 > 
 > **Required?** ❌
 > 
-> Do not install XDebug in your environment. Equivalent to setting `options.environment.php.xdebug = false`
-> in your project Spinner config.
+> Do not install XDebug in your environment. Equivalent to setting `options.environment.php.xdebug = false` in your 
+> projects Spinner config.
 
 ## XDebug Setup
 
