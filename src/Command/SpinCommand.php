@@ -92,15 +92,13 @@ class SpinCommand extends AbstractSpinnerCommand
 
         passthru($command);
 
-        $this->style->success('Docker images built.');
-
         return Command::SUCCESS;
     }
 
     protected function projectDataExists(): bool
     {
         if ($this->config->getFilePaths()->get('projectData')->exists()) {
-            $this->style->warning('Project data already exists. Skipping new build.');
+            $this->style->warning('Project already exists. Skipping new build.');
 
             return true;
         }

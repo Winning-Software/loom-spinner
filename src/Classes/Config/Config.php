@@ -139,6 +139,7 @@ class Config
             DataPathInterface::CONFIG_NGINX_DOCKERFILE => new SpinnerFilePath(DataPathInterface::CONFIG_NGINX_DOCKERFILE),
             'nodeDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/Node.Dockerfile'),
             'xdebugIniTemplate' => new SpinnerFilePath('config/php-fpm/xdebug.ini'),
+            'opcacheIniTemplate' => new SpinnerFilePath('config/php-fpm/opcache.ini'),
             'xdebugDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/XDebug.Dockerfile'),
         ]);
     }

@@ -1,4 +1,4 @@
-FROM php:${PHP_VERSION}-fpm
+FROM php:${PHP_VERSION}-fpm AS php-build
 
 RUN mkdir -p /var/www/html
 
@@ -11,10 +11,13 @@ RUN apt-get -qq update && apt-get -qq install -y \
     libicu-dev \
     nano \
     bash \
-    dnsutils
+    dnsutils \
+    > /dev/null 2>&1
 
-RUN docker-php-ext-configure intl > /dev/null
+RUN docker-php-ext-configure intl > /dev/null 2>&1
 RUN docker-php-ext-install mysqli pdo pdo_mysql sockets intl exif bcmath > /dev/null
+RUN docker-php-ext-install opcache > /dev/null 2>&1
+COPY ./opcache.ini "${PHP_INI_DIR}/conf.d"
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 

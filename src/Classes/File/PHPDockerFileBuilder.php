@@ -33,6 +33,11 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
 
         $this->content = str_replace('${PHP_VERSION}', (string) $this->config->getPhpVersion($input), $this->content);
 
+        file_put_contents(
+            (new SpinnerFilePath(sprintf('data/environments/%s/php-fpm/opcache.ini', $input->getArgument('name'))))->getProvidedPath(),
+            file_get_contents($this->config->getFilePaths()->get('opcacheIniTemplate')->getAbsolutePath())
+        );
+
         if ($this->config->isNodeEnabled($input)) {
             $this->addNewLine();
             $this->content .= file_get_contents($this->config->getFilePaths()->get('nodeDockerfileTemplate')->getAbsolutePath());
