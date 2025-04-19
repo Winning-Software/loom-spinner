@@ -5,6 +5,7 @@ RUN mkdir -p /var/www/html
 RUN apt-get -qq update && apt-get -qq install -y \
     apt-transport-https \
     git \
+    jq \
     curl \
     zip \
     unzip \
