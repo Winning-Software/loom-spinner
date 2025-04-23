@@ -1,5 +1,7 @@
 {
     "name": "loomlabs/spinner",
+    "decsription": "A simple command-line Docker environment spinner for PHP",
+    "version": "0.1.0",
     "autoload": {
         "psr-4": {
             "Loom\\Spinner\\": "src/"
@@ -12,7 +14,6 @@
     },
     "require": {
         "loomlabs/utility.collection": "^1.1",
-        "loomlabs/utility.filepath": "^1.2.1",
         "symfony/console": "^7.2",
         "symfony/yaml": "^7.2"
     },
