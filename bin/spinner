@@ -3,14 +3,18 @@
 
 use Loom\Spinner\Command\DestroyCommand;
 use Loom\Spinner\Command\SpinCommand;
+use Loom\Spinner\Command\StartCommand;
+use Loom\Spinner\Command\StopCommand;
 use Symfony\Component\Console\Application;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $application = new Application('Loom Spinner');
 
-$application->add(new SpinCommand());
 $application->add(new DestroyCommand());
+$application->add(new SpinCommand());
+$application->add(new StartCommand());
+$application->add(new StopCommand());
 
 try {
     $application->run();
