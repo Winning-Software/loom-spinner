@@ -41,12 +41,12 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
         return Command::SUCCESS;
     }
 
-    protected function buildDockerComposeCommand(string $command, bool $daemon = true): string
+    protected function buildDockerComposeCommand(string $command, bool $withEnv = false, bool $daemon = true): string
     {
         return sprintf(
-            'cd %s && docker compose --env-file=%s %s%s',
+            'cd %s && docker compose%s %s%s',
             $this->config->getDataDirectory(),
-            $this->config->getDataDirectory() . '/.env',
+            $withEnv ? ' --env-file=' . $this->config->getDataDirectory() . '/.env' : '',
             $command,
             $daemon ? ' -d' : ''
         );

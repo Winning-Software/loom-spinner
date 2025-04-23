@@ -97,7 +97,7 @@ class SpinCommand extends AbstractSpinnerCommand
 
         $this->config = new Config($input->getArgument('name'), $this->projectWorkPath);
 
-        if ($this->config->projectDataExists($input->getArgument('name'))) {
+        if (file_exists($this->config->getDataDirectory())) {
             $this->style->error('A project with the same name already exists.');
 
             return Command::FAILURE;

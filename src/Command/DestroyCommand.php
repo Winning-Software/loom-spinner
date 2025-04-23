@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Command;
 
+use Loom\Spinner\Classes\Config\Config;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,6 +29,37 @@ class DestroyCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
+        $this->config = new Config($input->getArgument('name'));
+
+        if (!file_exists($this->config->getDataDirectory())) {
+            $this->style->error('No project found with the provided name.');
+
+            return Command::FAILURE;
+        }
+
+        try {
+            passthru($this->buildDockerComposeCommand('down', false, false));
+            recursive_rmdir($this->config->getDataDirectory());
+        } catch (\Exception $exception) {
+            $this->style->error('An error occurred while destroying the project: ' . $exception->getMessage());
+
+            return Command::FAILURE;
+        }
+
         return Command::SUCCESS;
     }
+}
+
+function recursive_rmdir(string $dir): void
+{
+    if (!is_dir($dir)) return;
+
+    $items = new \RecursiveIteratorIterator(
+        new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+        \RecursiveIteratorIterator::CHILD_FIRST
+    );
+    foreach ($items as $item) {
+        $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+    }
+    rmdir($dir);
 }
