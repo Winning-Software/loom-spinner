@@ -15,13 +15,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
      */
     public function __construct(Config $config)
     {
-        $projectDockerCompose = $config->getFilePaths()->get('projectDockerCompose');
-
-        if (!$projectDockerCompose instanceof FilePath) {
-            throw new \Exception('Project Docker Compose file path not found.');
-        }
-
-        return parent::__construct($projectDockerCompose, $config);
+        return parent::__construct($config->getDataDirectory() . '/docker-compose.yaml', $config);
     }
 
     /**
@@ -29,9 +23,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
      */
     public function build(InputInterface $input): DockerComposeFileBuilder
     {
-        $this->content = file_get_contents(
-            $this->config->getFilePaths()->get('phpYamlTemplate')->getAbsolutePath()
-        );
+        $this->content = $this->config->getConfigFileContents('php.yaml');
 
         if ($this->config->isDatabaseEnabled($input) && in_array($this->config->getDatabaseDriver($input), ['sqlite3', 'sqlite'])) {
             $this->addSqliteDatabaseConfig();
@@ -49,20 +41,18 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         $this->content .= str_replace(
             'services:',
             '',
-            file_get_contents(
-                $this->config->getFilePaths()->get('nginxYamlTemplate')->getAbsolutePath()
-            )
+            $this->config->getConfigFileContents('nginx.yaml')
         );
         $this->content = str_replace(
             './nginx/conf.d',
-            (new FilePath('config/nginx/conf.d'))->getAbsolutePath(),
+            $this->config->getConfigFilePath('nginx/conf.d'),
             $this->content
         );
     }
 
     private function addSqliteDatabaseConfig(): void
     {
-        $sqlLiteConfig = file_get_contents((new FilePath('config/sqlite.yaml'))->getAbsolutePath());
+        $sqlLiteConfig = $this->config->getConfigFileContents('sqlite.yaml');
         $sqlLiteConfig = str_replace('volumes:', '', $sqlLiteConfig);
         $this->content .= $sqlLiteConfig;
     }

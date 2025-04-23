@@ -4,40 +4,52 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Classes\Config;
 
-use Loom\Spinner\Classes\Collection\FilePathCollection;
-use Loom\Spinner\Classes\File\Interface\DataPathInterface;
-use Loom\Utility\FilePath\FilePath;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class Config
 {
-    private FilePathCollection $filePaths;
+    private string $spinnerRootPath;
+    private string $configDirectory;
+    private string $dataDirectory;
+    private ?string $projectWorkPath = null;
 
-    public function __construct()
+    public function __construct(string $projectName, ?string $projectWorkPath = null)
     {
-        $this->setFilePaths();
+        $this->spinnerRootPath = dirname(__DIR__, 3);
+        $this->configDirectory = $this->spinnerRootPath . '/config';
+        $this->dataDirectory = $this->spinnerRootPath . '/data/environments/' . $projectName;
+
+        if ($projectWorkPath) {
+            $this->projectWorkPath = $projectWorkPath;
+        }
     }
 
-    public function getFilePaths(): FilePathCollection
+    public function getDataDirectory(): string
     {
-        return $this->filePaths;
+        return $this->dataDirectory;
     }
 
-    public function getFilePath(string $key): ?FilePath
+    public function getConfigFilePath(string $fileName): string
     {
-        return $this->filePaths->get($key);
+        return $this->configDirectory . '/' . $fileName;
     }
 
-    public function addFilePath(FilePath $filePath, string $key): void
+    public function getConfigFileContents(string $fileName): string|null
     {
-        $this->filePaths->add($filePath, $key);
+        if (file_exists($this->configDirectory . '/' . $fileName)) {
+            return file_get_contents($this->configDirectory . '/' . $fileName);
+        }
+
+        return null;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function getPhpVersion(InputInterface $input): ?float
+    public function projectDataExists(string $projectName): bool
+    {
+        return file_exists($this->dataDirectory . '/environments/' . $projectName);
+    }
+
+    public function getPhpVersion(InputInterface $input): float
     {
         if ($input->getOption('php')) {
             return (float) $input->getOption('php');
@@ -91,7 +103,7 @@ class Config
             return false;
         }
 
-        return $this->getEnvironmentOption('database', 'enabled');
+        return (bool) $this->getEnvironmentOption('database', 'enabled');
     }
 
     /**
@@ -118,52 +130,29 @@ class Config
         return (int) $this->getEnvironmentOption('node','version');
     }
 
-    /**
-     * @throws \Exception
-     */
     public function getEnvironmentOption(string $service, string $option): mixed
     {
-        $projectCustomConfig = $this->filePaths->get('projectCustomConfig');
+        $projectCustomConfig = $this->getProjectCustomConfig();
 
-        if ($projectCustomConfig->exists()) {
-            $customConfig = Yaml::parseFile($projectCustomConfig->getAbsolutePath())['options']['environment']
-                ?? null;
-
-            if ($customConfig) {
-                if (isset($customConfig[$service][$option])) {
-                    return $customConfig[$service][$option];
-                }
-            }
+        if ($projectCustomConfig) {
+            return $projectCustomConfig[$service][$option] ?? $this->getDefaultConfig()[$service][$option] ?? null;
         }
 
-        return $this->getDefaultConfig()['environment'][$service][$option] ?? null;
+        return $this->getDefaultConfig()[$service][$option] ?? null;
     }
 
-    /**
-     * @throws \Exception
-     */
+    public function getProjectCustomConfig(): ?array
+    {
+        if ($this->projectWorkPath && file_exists($this->projectWorkPath . '/spinner.yaml')) {
+            return Yaml::parseFile($this->projectWorkPath . '/spinner.yaml')['options']['environment'];
+        }
+
+        return null;
+    }
+
     protected function getDefaultConfig(): ?array
     {
-        return Yaml::parseFile($this->filePaths->get('defaultSpinnerConfig')?->getAbsolutePath())['options']
+        return Yaml::parseFile($this->configDirectory . '/spinner.yaml')['options']['environment']
             ?? null;
-    }
-
-    private function setFilePaths(): void
-    {
-        $this->filePaths = new FilePathCollection([
-            'config' => new FilePath('config'),
-            'defaultSpinnerConfig' => new FilePath('config/spinner.yaml'),
-            'envTemplate' => new FilePath('config/.template.env'),
-            'data' => new FilePath('data'),
-            'phpYamlTemplate' => new FilePath('config/php.yaml'),
-            'nginxYamlTemplate' => new FilePath('config/nginx.yaml'),
-            'phpFpmDataDirectory' => new FilePath('config/php-fpm'),
-            DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE => new FilePath(DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE),
-            DataPathInterface::CONFIG_NGINX_DOCKERFILE => new FilePath(DataPathInterface::CONFIG_NGINX_DOCKERFILE),
-            'nodeDockerfileTemplate' => new FilePath('config/php-fpm/Node.Dockerfile'),
-            'xdebugIniTemplate' => new FilePath('config/php-fpm/xdebug.ini'),
-            'opcacheIniTemplate' => new FilePath('config/php-fpm/opcache.ini'),
-            'xdebugDockerfileTemplate' => new FilePath('config/php-fpm/XDebug.Dockerfile'),
-        ]);
     }
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Loom\Spinner\Command\DestroyCommand;
 use Loom\Spinner\Command\SpinCommand;
 use Symfony\Component\Console\Application;
 
@@ -9,6 +10,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 $application = new Application('Loom Spinner');
 
 $application->add(new SpinCommand());
+$application->add(new DestroyCommand());
 
 try {
     $application->run();

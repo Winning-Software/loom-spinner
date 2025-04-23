@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Loom\Spinner\Classes\File;
 
 use Loom\Spinner\Classes\Config\Config;
-use Loom\Spinner\Classes\File\Interface\DataPathInterface;
-use Loom\Utility\FilePath\FilePath;
 use Symfony\Component\Console\Input\InputInterface;
 
 class PHPDockerFileBuilder extends AbstractFileBuilder
@@ -16,13 +14,7 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
      */
     public function __construct(Config $config)
     {
-        $projectPhpFpmDockerfile = $config->getFilePath('projectPhpFpmDockerfile');
-
-        if (!$projectPhpFpmDockerfile instanceof FilePath) {
-            throw new \Exception('Project PHP-FPM Dockerfile not found');
-        }
-
-        return parent::__construct($projectPhpFpmDockerfile, $config);
+        return parent::__construct($config->getDataDirectory() . '/php-fpm/Dockerfile', $config);
     }
 
     /**
@@ -35,27 +27,27 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
         $this->content = str_replace('${PHP_VERSION}', (string) $this->config->getPhpVersion($input), $this->content);
 
         file_put_contents(
-            (new FilePath(sprintf('data/environments/%s/php-fpm/opcache.ini', $input->getArgument('name'))))->getProvidedPath(),
-            file_get_contents($this->config->getFilePaths()->get('opcacheIniTemplate')->getAbsolutePath())
+            $this->config->getDataDirectory() . '/php-fpm/opcache.ini',
+            $this->config->getConfigFileContents('php-fpm/opcache.ini')
         );
 
         if ($this->config->isDatabaseEnabled($input) && in_array($this->config->getDatabaseDriver($input), ['sqlite3', 'sqlite'])) {
             $this->addNewLine();
-            $this->content .= file_get_contents((new FilePath('config/php-fpm/Sqlite.Dockerfile'))->getAbsolutePath());
+            $this->content .= $this->config->getConfigFileContents('php-fpm/Sqlite.Dockerfile');
         }
 
         if ($this->config->isNodeEnabled($input)) {
             $this->addNewLine();
-            $this->content .= file_get_contents($this->config->getFilePaths()->get('nodeDockerfileTemplate')->getAbsolutePath());
+            $this->content .= $this->config->getConfigFileContents('php-fpm/Node.Dockerfile');
             $this->content = str_replace('${NODE_VERSION}', (string) $this->config->getNodeVersion($input), $this->content);
         }
 
         if ($this->config->isXdebugEnabled($input)) {
             $this->addNewLine();
-            $this->content .= file_get_contents($this->config->getFilePaths()->get('xdebugDockerfileTemplate')->getAbsolutePath());
+            $this->content .= $this->config->getConfigFileContents('php-fpm/Xdebug.Dockerfile');
             file_put_contents(
-                (new FilePath(sprintf('data/environments/%s/php-fpm/xdebug.ini', $input->getArgument('name'))))->getProvidedPath(),
-                file_get_contents($this->config->getFilePaths()->get('xdebugIniTemplate')->getAbsolutePath())
+                $this->config->getDataDirectory() . '/php-fpm/xdebug.ini',
+                $this->config->getConfigFileContents('php-fpm/xdebug.ini')
             );
         }
 
@@ -64,8 +56,6 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
 
     private function setInitialContent(): void
     {
-        $this->content = file_get_contents(
-            $this->config->getFilePaths()->get(DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE)->getAbsolutePath()
-        );
+        $this->content = $this->config->getConfigFileContents('php-fpm/Dockerfile');
     }
 }

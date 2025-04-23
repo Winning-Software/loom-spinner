@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Command;
 
+use Loom\Spinner\Classes\Config\Config;
 use Loom\Spinner\Classes\File\DockerComposeFileBuilder;
 use Loom\Spinner\Classes\File\NginxDockerFileBuilder;
 use Loom\Spinner\Classes\File\PHPDockerFileBuilder;
 use Loom\Spinner\Classes\OS\PortGenerator;
-use Loom\Utility\FilePath\FilePath;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,6 +21,7 @@ class SpinCommand extends AbstractSpinnerCommand
 {
     private PortGenerator $portGenerator;
     private array $ports;
+    private string $projectWorkPath = '';
 
     public function __construct()
     {
@@ -84,14 +85,35 @@ class SpinCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        if ($this->projectDataExists()) {
-            return Command::SUCCESS;
+        $this->projectWorkPath = $input->getArgument('path') === '.'
+            ? getcwd()
+            : $input->getArgument('path');
+
+        if (!file_exists($this->projectWorkPath)) {
+            $this->style->error('The provided project path does not exist.');
+
+            return Command::FAILURE;
+        }
+
+        $this->config = new Config($input->getArgument('name'), $this->projectWorkPath);
+
+        if ($this->config->projectDataExists($input->getArgument('name'))) {
+            $this->style->error('A project with the same name already exists.');
+
+            return Command::FAILURE;
         }
 
         $this->style->success("Spinning up a new development environment...");
 
         $this->style->text('Creating project data...');
-        $this->createProjectData($input);
+
+        try {
+            $this->createProjectData($input);
+        } catch (\Exception $exception) {
+            $this->style->error('Failed to create project data: '. $exception->getMessage());
+
+            return Command::FAILURE;
+        }
         $this->style->success('Project data created.');
 
         $this->style->text('Building Docker images...');
@@ -102,23 +124,12 @@ class SpinCommand extends AbstractSpinnerCommand
         return Command::SUCCESS;
     }
 
-    protected function projectDataExists(): bool
-    {
-        if ($this->config->getFilePaths()->get('projectData')->exists()) {
-            $this->style->warning('Project already exists. Skipping new build.');
-
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * @throws \Exception
      */
     private function createProjectData(InputInterface $input): void
     {
-        $this->createProjectDataDirectory();
+        $this->createProjectDataDirectory($input);
         $this->createEnvironmentFile($input);
         $this->buildDockerComposeFile($input);
         $this->buildDockerfiles($input);
@@ -127,15 +138,13 @@ class SpinCommand extends AbstractSpinnerCommand
     /**
      * @throws \Exception
      */
-    private function createProjectDataDirectory(): void
+    private function createProjectDataDirectory(InputInterface $input): void
     {
-        $projectData = $this->config->getFilePaths()->get('projectData');
-
-        if (!$projectData instanceof FilePath) {
-            throw new \Exception('Invalid project data directory provided.');
-        }
-
-        mkdir($projectData->getProvidedPath(), 0777, true);
+        mkdir(
+            $this->config->getDataDirectory(),
+            0777,
+            true
+        );
     }
 
     /**
@@ -143,21 +152,15 @@ class SpinCommand extends AbstractSpinnerCommand
      */
     private function createEnvironmentFile(InputInterface $input): void
     {
-        $projectEnv = $this->config->getFilePaths()->get('projectEnv');
-
-        if (!$projectEnv instanceof FilePath) {
-            throw new \Exception('Invalid project environment file provided.');
-        }
-
         file_put_contents(
-            $projectEnv->getProvidedPath(),
+            $this->config->getDataDirectory() . '/.env',
             sprintf(
-                file_get_contents($this->config->getFilePaths()->get('envTemplate')->getAbsolutePath()),
-                $this->config->getFilePaths()->get('project')->getAbsolutePath(),
+                $this->config->getConfigFileContents('.template.env'),
+                $this->projectWorkPath,
                 $input->getArgument('name'),
                 $this->config->getPhpVersion($input),
-                $this->getPort('php'),
-                $this->getPort('nginx'),
+                $this->ports['php'],
+                $this->ports['nginx'],
             )
         );
     }
@@ -167,12 +170,7 @@ class SpinCommand extends AbstractSpinnerCommand
      */
     private function buildDockerComposeFile(InputInterface $input): void
     {
-        $this->createProjectPhpFpmDirectory();
-
-        if ($this->config->isServerEnabled($input)) {
-            $this->createProjectNginxDirectory();
-            (new NginxDockerFileBuilder($this->config))->build($input)->save();
-        }
+        $this->createProjectDataSubDirectory('php-fpm');
 
         (new DockerComposeFileBuilder($this->config))->build($input)->save();
     }
@@ -182,43 +180,18 @@ class SpinCommand extends AbstractSpinnerCommand
      */
     private function buildDockerfiles(InputInterface $input): void
     {
+        if ($this->config->isServerEnabled($input)) {
+            $this->createProjectDataSubDirectory('nginx');
+            (new NginxDockerFileBuilder($this->config))->build($input)->save();
+        }
+
         (new PHPDockerFileBuilder($this->config))->build($input)->save();
     }
 
-    /**
-     * @throws \Exception
-     */
-    private function createProjectPhpFpmDirectory(): void
+    private function createProjectDataSubDirectory(string $directory): void
     {
-        $projectData = $this->config->getFilePaths()->get('projectData');
-
-        if (!$projectData instanceof FilePath) {
-            throw new \Exception('Invalid project data directory provided.');
+        if (!file_exists($this->config->getDataDirectory() . '/' . $directory)) {
+            mkdir($this->config->getDataDirectory() . '/' . $directory, 0777, true);
         }
-
-        if (!file_exists($projectData->getProvidedPath() . '/php-fpm')) {
-            mkdir($projectData->getProvidedPath() . '/php-fpm', 0777, true);
-        }
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function createProjectNginxDirectory(): void
-    {
-        $projectData = $this->config->getFilePaths()->get('projectData');
-
-        if (!$projectData instanceof FilePath) {
-            throw new \Exception('Invalid project data directory provided.');
-        }
-
-        if (!file_exists($projectData->getProvidedPath() . '/nginx')) {
-            mkdir($projectData->getProvidedPath() . '/nginx', 0777, true);
-        }
-    }
-
-    private function getPort(string $service): ?int
-    {
-        return $this->ports[$service];
     }
 }
