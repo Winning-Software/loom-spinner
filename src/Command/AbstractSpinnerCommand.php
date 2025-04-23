@@ -6,7 +6,6 @@ namespace Loom\Spinner\Command;
 
 use Loom\Spinner\Classes\Collection\FilePathCollection;
 use Loom\Spinner\Classes\Config\Config;
-use Loom\Spinner\Classes\File\SpinnerFilePath;
 use Loom\Spinner\Classes\OS\System;
 use Loom\Spinner\Command\Interface\ConsoleCommandInterface;
 use Loom\Utility\FilePath\FilePath;
@@ -54,7 +53,7 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
     protected function buildDockerComposeCommand(string $command, bool $daemon = true): string
     {
         return sprintf(
-            'cd %s && docker-compose --env-file=%s %s%s',
+            'cd %s && docker compose --env-file=%s %s%s',
             $this->config->getFilePaths()->get('projectData')->getAbsolutePath(),
             $this->config->getFilePaths()->get('projectEnv')->getAbsolutePath(),
             $command,
@@ -81,25 +80,26 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
 
     private function validateNameArgument(InputInterface $input): void
     {
+        var_dump('Validating name argument');
         if ($input->hasArgument('name')) {
             $this->config->addFilePath(
-                new SpinnerFilePath(sprintf('data/environments/%s', $input->getArgument('name'))),
+                new FilePath(sprintf('data/environments/%s', $input->getArgument('name'))),
                 'projectData'
             );
             $this->config->addFilePath(
-                new SpinnerFilePath(sprintf('data/environments/%s/.env', $input->getArgument('name'))),
+                new FilePath(sprintf('data/environments/%s/.env', $input->getArgument('name'))),
                 'projectEnv'
             );
             $this->config->addFilePath(
-                new SpinnerFilePath(sprintf('data/environments/%s/docker-compose.yml', $input->getArgument('name'))),
+                new FilePath(sprintf('data/environments/%s/docker-compose.yml', $input->getArgument('name'))),
                 'projectDockerCompose'
             );
             $this->config->addFilePath(
-                new SpinnerFilePath(sprintf('data/environments/%s/php-fpm/Dockerfile', $input->getArgument('name'))),
+                new FilePath(sprintf('data/environments/%s/php-fpm/Dockerfile', $input->getArgument('name'))),
                 'projectPhpFpmDockerfile'
             );
             $this->config->addFilePath(
-                new SpinnerFilePath(sprintf('data/environments/%s/nginx/Dockerfile', $input->getArgument('name'))),
+                new FilePath(sprintf('data/environments/%s/nginx/Dockerfile', $input->getArgument('name'))),
                 'projectNginxDockerfile'
             );
             $this->config->addFilePath(

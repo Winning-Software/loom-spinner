@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Loom\Spinner\Classes\File;
 
 use Loom\Spinner\Classes\Config\Config;
+use Loom\Utility\FilePath\FilePath;
 use Symfony\Component\Console\Input\InputInterface;
 
 class DockerComposeFileBuilder extends AbstractFileBuilder
@@ -16,7 +17,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
     {
         $projectDockerCompose = $config->getFilePaths()->get('projectDockerCompose');
 
-        if (!$projectDockerCompose instanceof SpinnerFilePath) {
+        if (!$projectDockerCompose instanceof FilePath) {
             throw new \Exception('Project Docker Compose file path not found.');
         }
 
@@ -54,14 +55,14 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         );
         $this->content = str_replace(
             './nginx/conf.d',
-            (new SpinnerFilePath('config/nginx/conf.d'))->getAbsolutePath(),
+            (new FilePath('config/nginx/conf.d'))->getAbsolutePath(),
             $this->content
         );
     }
 
     private function addSqliteDatabaseConfig(): void
     {
-        $sqlLiteConfig = file_get_contents((new SpinnerFilePath('config/sqlite.yaml'))->getAbsolutePath());
+        $sqlLiteConfig = file_get_contents((new FilePath('config/sqlite.yaml'))->getAbsolutePath());
         $sqlLiteConfig = str_replace('volumes:', '', $sqlLiteConfig);
         $this->content .= $sqlLiteConfig;
     }

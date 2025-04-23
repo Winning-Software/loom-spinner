@@ -6,7 +6,6 @@ namespace Loom\Spinner\Classes\Config;
 
 use Loom\Spinner\Classes\Collection\FilePathCollection;
 use Loom\Spinner\Classes\File\Interface\DataPathInterface;
-use Loom\Spinner\Classes\File\SpinnerFilePath;
 use Loom\Utility\FilePath\FilePath;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -152,19 +151,19 @@ class Config
     private function setFilePaths(): void
     {
         $this->filePaths = new FilePathCollection([
-            'config' => new SpinnerFilePath('config'),
-            'defaultSpinnerConfig' => new SpinnerFilePath('config/spinner.yaml'),
-            'envTemplate' => new SpinnerFilePath('config/.template.env'),
-            'data' => new SpinnerFilePath('data'),
-            'phpYamlTemplate' => new SpinnerFilePath('config/php.yaml'),
-            'nginxYamlTemplate' => new SpinnerFilePath('config/nginx.yaml'),
-            'phpFpmDataDirectory' => new SpinnerFilePath('config/php-fpm'),
-            DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE => new SpinnerFilePath(DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE),
-            DataPathInterface::CONFIG_NGINX_DOCKERFILE => new SpinnerFilePath(DataPathInterface::CONFIG_NGINX_DOCKERFILE),
-            'nodeDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/Node.Dockerfile'),
-            'xdebugIniTemplate' => new SpinnerFilePath('config/php-fpm/xdebug.ini'),
-            'opcacheIniTemplate' => new SpinnerFilePath('config/php-fpm/opcache.ini'),
-            'xdebugDockerfileTemplate' => new SpinnerFilePath('config/php-fpm/XDebug.Dockerfile'),
+            'config' => new FilePath('config'),
+            'defaultSpinnerConfig' => new FilePath('config/spinner.yaml'),
+            'envTemplate' => new FilePath('config/.template.env'),
+            'data' => new FilePath('data'),
+            'phpYamlTemplate' => new FilePath('config/php.yaml'),
+            'nginxYamlTemplate' => new FilePath('config/nginx.yaml'),
+            'phpFpmDataDirectory' => new FilePath('config/php-fpm'),
+            DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE => new FilePath(DataPathInterface::CONFIG_PHP_FPM_DOCKERFILE),
+            DataPathInterface::CONFIG_NGINX_DOCKERFILE => new FilePath(DataPathInterface::CONFIG_NGINX_DOCKERFILE),
+            'nodeDockerfileTemplate' => new FilePath('config/php-fpm/Node.Dockerfile'),
+            'xdebugIniTemplate' => new FilePath('config/php-fpm/xdebug.ini'),
+            'opcacheIniTemplate' => new FilePath('config/php-fpm/opcache.ini'),
+            'xdebugDockerfileTemplate' => new FilePath('config/php-fpm/XDebug.Dockerfile'),
         ]);
     }
 }

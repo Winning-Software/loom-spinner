@@ -7,8 +7,8 @@ namespace Loom\Spinner\Command;
 use Loom\Spinner\Classes\File\DockerComposeFileBuilder;
 use Loom\Spinner\Classes\File\NginxDockerFileBuilder;
 use Loom\Spinner\Classes\File\PHPDockerFileBuilder;
-use Loom\Spinner\Classes\File\SpinnerFilePath;
 use Loom\Spinner\Classes\OS\PortGenerator;
+use Loom\Utility\FilePath\FilePath;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -131,7 +131,7 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $projectData = $this->config->getFilePaths()->get('projectData');
 
-        if (!$projectData instanceof  SpinnerFilePath) {
+        if (!$projectData instanceof FilePath) {
             throw new \Exception('Invalid project data directory provided.');
         }
 
@@ -145,7 +145,7 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $projectEnv = $this->config->getFilePaths()->get('projectEnv');
 
-        if (!$projectEnv instanceof SpinnerFilePath) {
+        if (!$projectEnv instanceof FilePath) {
             throw new \Exception('Invalid project environment file provided.');
         }
 
@@ -192,7 +192,7 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $projectData = $this->config->getFilePaths()->get('projectData');
 
-        if (!$projectData instanceof  SpinnerFilePath) {
+        if (!$projectData instanceof FilePath) {
             throw new \Exception('Invalid project data directory provided.');
         }
 
@@ -208,7 +208,7 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $projectData = $this->config->getFilePaths()->get('projectData');
 
-        if (!$projectData instanceof  SpinnerFilePath) {
+        if (!$projectData instanceof FilePath) {
             throw new \Exception('Invalid project data directory provided.');
         }
 
