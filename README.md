@@ -73,6 +73,19 @@ Creates a new PHP development environment and mounts your project files.
 > Do not install XDebug in your environment. Equivalent to setting `options.environment.php.xdebug = false` in your 
 > projects Spinner config.
 
+## Command: `spin:down`
+
+Destroys a named environment; containers and Spinner config.
+
+> #### Argument: name
+>
+> **Required?** ✅
+>
+> The name of the containers and associated config that you wish to delete. Use the same name you used when you
+> span up your containers with the `spin:up` command.
+> 
+> `spinner spin:down name=project-name`
+
 ## XDebug Setup
 
 These instructions are for PHPStorm. I don't know about working with other IDE's, although they
