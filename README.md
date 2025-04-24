@@ -70,7 +70,13 @@ To start them again:
 loom spin:start my-project
 ```
 
+To remove them completely:
+
+```shell
+loom spin:down my-project
+```
+
 Loom Spinner can be further customized with a set of simple configuration options. For a more detailed quick-start guide 
-or advanced configuration tips, check out the project wiki.
+or advanced configuration tips, check out the [project wiki](https://forge.winningsoftware.co.uk/LoomLabs/loom-spinner-cli/wiki).
 
 Happy spinning! 🧵
