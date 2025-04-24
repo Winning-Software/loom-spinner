@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2025-04-24
+### Added
+- Added information on `spin:down` command to README.
+
+### Changed
+- Minor documentation tweak to include link to Wiki on Packagist.
+
 ## [1.0.1] - 2025-04-24
 ### Changed
 - Minor documentation tweak to make the header image display on Packagist.
