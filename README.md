@@ -1,44 +1,40 @@
 <p>
-<img src="./header.jpg" alt="Loom Spinner CLI Header Image &amp; Logo" style="width: 100%; height: auto;">
+<img src="./header.jpg" alt="Loom Spinner CLI Header Image & Logo" style="width: 100%; height: auto;">
 </p>
 
-# Loom Spinner
+# Loom Spinner CLI
 
 <p>
-<!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-1.0.0-blue" alt="Version 1.1.0">
+<img src="https://img.shields.io/badge/Version-1.0.0-blue" alt="Version 1.0.0">
 </p>
 
-An environment management application for PHP developers. 
+A streamlined environment management tool for PHP developers.
 
-Allows you to spin up minimal, sensibly pre-configured Docker
-containers for PHP development, for a fast, consistent and smooth development experience.
+Loom Spinner makes it easy to launch minimal, thoughtfully pre-configured Docker containers for PHP development - helping 
+you enjoy a fast, consistent, and hassle-free workflow.
 
-Simple commands you can run from anywhere on your system.
+Run simple commands from anywhere on your system to manage your environments.
 
-# The Lowdown
+# At a Glance
 
-Create pre-configured Docker environments on a project-by-project basis, tailored specifically for developing PHP 
-applications. The default setup gives you an environment with:
+Effortlessly create custom Docker environments for each of your PHP projects. Out of the box, Loom Spinner provides:
 
-- PHP 8.4 (with XDebug + OpCache)
-- Nginx
-- SQLite3
-- NodeJS 23 (Node, NPM + NPX)
+- **PHP 8.4** (includes XDebug & OpCache)
+- **Nginx**
+- **SQLite3**
+- **NodeJS 23** (Node, NPM, & NPX)
 
-Your project is mounted to the PHP container and your projects `public` directory is served via Nginx at 
-`http://localhost:<nginx-port>`. Your container is also accessible via the command line, so you can run unit tests 
-or other commands inside your sandboxed environment.
+Your project directory is automatically mounted to the PHP container, and the `public` directory is served via Nginx at `http://localhost:<nginx-port>`. Access the container directly from your terminal to execute unit tests or other commands—all within an isolated environment.
 
-**Loom Spinner CLI is currently in the early stages of development and thus only has limited features, such as only 
-allowing you to use a SQLite database. More options will be added in subsequent releases.**
+> **Note:** Loom Spinner CLI is in early development. For now, only SQLite is supported as the database, but more options are on the way in future updates.
 
 # Installation
 
-Pre-Requisites: 
+**Requirements:**
+- Composer
+- Docker Desktop or Docker Engine
 
-- Composer 
-- Docker Desktop/Docker Engine
+To install globally, run:
 
 ```shell
 composer global require loomlabs/loom-spinner-cli
@@ -46,38 +42,32 @@ composer global require loomlabs/loom-spinner-cli
 
 # Usage
 
-Start your (Docker) engines, then:
+Start Docker, then launch your project environment:
 
 ```shell
 cd /path/to/my-project
 loom spin:up my-project .
 ```
 
-Check your new containers ports by inspecting the containers in Docker Desktop or running `docker ps`. 
+Check which ports your containers are using via Docker Desktop or by running `docker ps`.
 
-Your projects public directory is now available at `http://localhost:<nginx-container-port>`. Voila!
+Once running, your project's public directory is accessible at `http://localhost:<nginx-container-port>`—you're ready to go!
 
-## What Else?
+## Managing Your Environment
 
-Want to stop your containers?
+To stop your containers:
 
 ```shell
 loom spin:stop my-project
 ```
 
-Start them again?
+To start them again:
 
 ```shell
 loom spin:start my-project
 ```
 
-Destroy your containers?
-
-```shell
-loom spin:down my-project
-```
-
-What's more, `loom` can be configured further with a simple set of configuration options. For a more detailed 
-quick-start guide or for more information on using and configuring **Loom Spinner CLI**, please consult the wiki.
+Loom Spinner can be further customized with a set of simple configuration options. For a more detailed quick-start guide 
+or advanced configuration tips, check out the project wiki.
 
 Happy spinning! 🧵
