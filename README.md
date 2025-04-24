@@ -4,7 +4,7 @@
 <img src="./header.jpg" alt="Loom Spinner CLI Header Image &amp; Logo" style="width: 100%; height: auto;">
 </div>
 
-<div></div>
+<div style="margin-top: 10px;"></div>
 
 <div>
 <!-- Version Badge -->
