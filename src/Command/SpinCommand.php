@@ -49,12 +49,6 @@ class SpinCommand extends AbstractSpinnerCommand
                 'The PHP version to use (e.g., 8.0).'
             )
             ->addOption(
-                'disable-node',
-                null,
-                InputOption::VALUE_NONE,
-                'Set this flag to disable Node.js for your environment.'
-            )
-            ->addOption(
                 'disable-server',
                 null,
                 InputOption::VALUE_NONE,

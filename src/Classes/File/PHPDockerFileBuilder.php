@@ -36,11 +36,7 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
             $this->content .= $this->config->getConfigFileContents('php-fpm/Sqlite.Dockerfile');
         }
 
-        if ($this->config->isNodeEnabled($input)) {
-            $this->addNewLine();
-            $this->content .= $this->config->getConfigFileContents('php-fpm/Node.Dockerfile');
-            $this->content = str_replace('${NODE_VERSION}', (string) $this->config->getNodeVersion($input), $this->content);
-        }
+        $this->content = str_replace('${NODE_VERSION}', (string) $this->config->getNodeVersion($input), $this->content);
 
         if ($this->config->isXdebugEnabled($input)) {
             $this->addNewLine();

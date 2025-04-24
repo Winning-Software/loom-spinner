@@ -43,9 +43,8 @@ Creates a new PHP development environment and mounts your project files.
 
 > #### Option: --node
 > 
-> Set which version of Node to install in your container. Is ignored if the `--disable-node` flag is
-> passed, or if Node is disabled in your projects `spinner.yaml` file. Equivalent to setting 
-> `options.environment.node.version: x` in your projects Spinner config.
+> Set which version of Node to install in your container. Equivalent to setting `options.environment.node.version: x` 
+> in your projects Spinner config.
 
 > #### Option: --database
 > 
@@ -58,11 +57,6 @@ Creates a new PHP development environment and mounts your project files.
 >
 > Does not install a database with your environment. Equivalent to setting `options.environment.database.enabled: false` 
 > in your Spinner config.
-
-> #### Option: --disable-node
-> 
-> Disables Node for your environment, so it isn't included in your PHP container. Equivalent to setting 
-> `options.environment.node.enabled: false` in your Spinner config.
 
 > #### Option: --disable-server
 > 

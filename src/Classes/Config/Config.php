@@ -61,18 +61,6 @@ class Config
     /**
      * @throws \Exception
      */
-    public function isNodeEnabled(InputInterface $input): bool
-    {
-        if ($input->getOption('disable-node')) {
-            return false;
-        }
-
-        return $this->getEnvironmentOption('node', 'enabled');
-    }
-
-    /**
-     * @throws \Exception
-     */
     public function isServerEnabled(InputInterface $input): bool
     {
         if ($input->getOption('disable-server')) {
