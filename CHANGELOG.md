@@ -2,8 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2025-04-24
+### Fixed
+- Fixed a critical autoloading issue after the package is globally installed.
+
 ## [1.0.3] - 2025-04-24
-## Fixed
+### Fixed
 - Fixed typo in `composer.json` description field.
 
 ## [1.0.2] - 2025-04-24
