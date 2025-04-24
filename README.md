@@ -25,8 +25,8 @@ applications. The default setup gives you an environment with:
 - NodeJS 23 (Node, NPM + NPX)
 
 Your project is mounted to the PHP container and your projects `public` directory is served via Nginx at 
-`http://localhost:<nginx-port>` and your container is accessible via the command line for things like running
-unit tests.
+`http://localhost:<nginx-port>`. Your container is also accessible via the command line, so you can run unit tests 
+or other commands inside your sandboxed environment.
 
 **Loom Spinner CLI is currently in the early stages of development and thus only has limited features, such as only 
 allowing you to use a SQLite database. More options will be added in subsequent releases.**
