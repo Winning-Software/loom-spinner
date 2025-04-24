@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2025-04-24
+## Fixed
+- Fixed typo in `composer.json` description field.
+
 ## [1.0.2] - 2025-04-24
 ### Added
 - Added information on `spin:down` command to README.
