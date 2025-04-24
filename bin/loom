@@ -7,7 +7,14 @@ use Loom\Spinner\Command\StartCommand;
 use Loom\Spinner\Command\StopCommand;
 use Symfony\Component\Console\Application;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+$localAutoloadPath = sprintf('%s/vendor/autoload.php', dirname(__DIR__));
+$installedAutoloadPath = sprintf('%s/autoload.php', dirname(__DIR__, 3));
+
+if (file_exists($localAutoloadPath)) {
+    require $localAutoloadPath;
+} else {
+    require $installedAutoloadPath;
+}
 
 $application = new Application('Loom Spinner');
 
