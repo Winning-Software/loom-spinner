@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2025-04-24
+### Changed
+- Minor documentation tweak to make the header image display on Packagist.
+
 ## [1.0.0] – 2025-04-24
 
 ### Added
