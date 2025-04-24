@@ -1,6 +1,8 @@
 # Loom | Spinner
 
-<img src="./header.jpg">
+<div>
+<img src="./header.jpg" alt="Loom Spinner CLI Header Image &amp; Logo" style="width: 100%; height: auto;">
+</div>
 
 <div>
 <!-- Version Badge -->
