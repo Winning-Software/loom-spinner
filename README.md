@@ -28,8 +28,8 @@ Your project is mounted to the PHP container and your projects `public` director
 `http://localhost:<nginx-port>` and your container is accessible via the command line for things like running
 unit tests.
 
-**Loom Spinner CLI is currently in the early stages of development and thus only has limited features, such as the
-only database option currently being SQLite. More options will be added in subsequent releases.**
+**Loom Spinner CLI is currently in the early stages of development and thus only has limited features, such as only 
+allowing you to use a SQLite database. More options will be added in subsequent releases.**
 
 # Installation
 
