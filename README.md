@@ -4,6 +4,8 @@
 <img src="./header.jpg" alt="Loom Spinner CLI Header Image &amp; Logo" style="width: 100%; height: auto;">
 </div>
 
+<div></div>
+
 <div>
 <!-- Version Badge -->
 <img src="https://img.shields.io/badge/Version-1.0.0-blue" alt="Version 1.1.0">
