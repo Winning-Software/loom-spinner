@@ -1,112 +1,79 @@
 # Loom | Spinner
 
-An environment management application for PHP developers.
+<div>
+<!-- Version Badge -->
+<img src="https://img.shields.io/badge/Version-1.0.0-blue" alt="Version 1.1.0">
+</div>
 
-# Dev Notes
+An environment management application for PHP developers. 
 
-**Argument priority:**
+Allows you to spin up minimal, sensibly pre-configured Docker
+containers for PHP development, for a fast, consistent and smooth development experience.
 
-- Those passed explicitly in the CLI commands
-- Any set within `{projectDirectory}/spinner.yaml`
-- Fall back to `/config/spinner.yaml`
+Simple commands you can run from anywhere on your system.
 
-# Commands
+# The Lowdown
 
-## Command: `spin:up`
+Create pre-configured Docker environments on a project-by-project basis, tailored specifically for developing PHP 
+applications. The default setup gives you an environment with:
 
-Creates a new PHP development environment and mounts your project files.
+- PHP 8.4 (with XDebug + OpCache)
+- Nginx
+- SQLite3
+- NodeJS 23 (Node, NPM + NPX)
 
-### Arguments
+Your project is mounted to the PHP container and your projects `public` directory is served via Nginx at 
+`http://localhost:<nginx-port>` and your container is accessible via the command line for things like running
+unit tests.
 
-> #### Argument: name 
->
-> **Required?** ✅
-> 
-> The name of your Docker containers. Your containers will spin up with the name {name}-{service} i.e.
-> 
-> `spinner spin:up name=test path=/path`
-> 
-> Results in containers named `test-php` and `test-nginx`
+**Loom Spinner CLI is currently in the early stages of development and thus only has limited features, such as the
+only database option currently being SQLite. More options will be added in subsequent releases.**
 
-> #### Argument: path
-> 
-> **Required?** ✅
-> 
-> The **absolute path** on your system to the project you want to create containers for.
+# Installation
 
-### Options
+Pre-Requisites: 
 
-> #### Option: --php
-> 
-> Defines the PHP version that your container will use. You can omit this flag and set the PHP version inside your
-> projects `spinner.yaml` file. Otherwise, will use the default value found in `config/spinner.yaml`
+- Composer 
+- Docker Desktop/Docker Engine
 
-> #### Option: --node
-> 
-> Set which version of Node to install in your container. Equivalent to setting `options.environment.node.version: x` 
-> in your projects Spinner config.
+```shell
+composer global require loomlabs/loom-spinner-cli
+```
 
-> #### Option: --database
-> 
-> Set which database driver to use with your environment. The default (and currently only) database driver is `sqlite3`. 
-> Accepted values are currently `sqlite` and `sqlite3`. If using the default, SQLite is installed inside your PHP 
-> container and a mapping created to the `/sqlite` directory in your project. This argument is ignored if 
-> `--disabled-database` is set.
+# Usage
 
-> #### Option: --disable-database
->
-> Does not install a database with your environment. Equivalent to setting `options.environment.database.enabled: false` 
-> in your Spinner config.
+Start your (Docker) engines, then:
 
-> #### Option: --disable-server
-> 
-> Does not install a webserver (so no Nginx). Useful if you just need a PHP container to run unit tests or something.
+```shell
+cd /path/to/my-project
+loom spin:up my-project .
+```
 
-> #### Option: --disable-xdebug
-> 
-> Do not install XDebug in your environment. Equivalent to setting `options.environment.php.xdebug = false` in your 
-> projects Spinner config.
+Check your new containers ports by inspecting the containers in Docker Desktop or running `docker ps`. 
 
-## Command: `spin:down`
+Your projects public directory is now available at `http://localhost:<nginx-container-port>`. Voila!
 
-Destroys a named environment; containers and Spinner config.
+## What Else?
 
-> #### Argument: name
->
-> **Required?** ✅
->
-> The name of the containers and associated config that you wish to delete. Use the same name you used when you
-> span up your containers with the `spin:up` command.
-> 
-> `spinner spin:down name=project-name`
+Want to stop your containers?
 
-## XDebug Setup
+```shell
+loom spin:stop my-project
+```
 
-These instructions are for PHPStorm. I don't know about working with other IDE's, although they
-should be fairly universal.
+Start them again?
 
-### Server Settings
+```shell
+loom spin:start my-project
+```
 
-- `File` -> `Settings`
-- `PHP` -> `Servers` -> `+`
-- Give your "server" a name and use the values shown below.
+Destroy your containers?
 
-| Setting                 | Value                                                                                                          |
-|-------------------------|----------------------------------------------------------------------------------------------------------------|
-| Host                    | 127.0.0.1                                                                                                      |
-| Port                    | **Local** port **PHP** container is running on. i.e. if your docker container shows 52033:9003, use **52033**. |
-| Debugger                | Xdebug                                                                                                         |
-| Use path mappings?      | ✅                                                                                                              |
-| File/Directory          | Select **your project root**                                                                                   |
-| Absolute path on server | /var/www/html                                                                                                  |
+```shell
+loom spin:down my-project
+```
 
-### Remote Debugger
+What's more, `loom` can be configured further with a simple set of configuration options. For a more detailed 
+quick-start guide or for more information on using and configuring **Loom Spinner CLI**, please consult the wiki.
 
-- `Run` -> `Edit Configurations`
-- `+` -> `PHP Remote Debug`
-- Give it a name
-- Use the server you created before
-- Use **SPINNER** as IDE key
-
-Make sure you start listening when you want to debug by clicking the little bug icon in the 
-top right (by default) in PHPStorm.
+Happy spinning! 🧵
