@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.0] - 2025-04-24
+## [1.0.4] - 2025-04-24
 ### Fixed
 - Fixed a critical autoloading issue after the package is globally installed.
 
@@ -22,7 +22,6 @@ All notable changes to this project will be documented in this file.
 - Minor documentation tweak to make the header image display on Packagist.
 
 ## [1.0.0] – 2025-04-24
-
 ### Added
 - Initial public release of **Loom Spinner CLI**.
 - Command to spin up a new PHP development environment with Docker (`spin:up`).
