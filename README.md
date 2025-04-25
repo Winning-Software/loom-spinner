@@ -5,7 +5,7 @@
 # Loom Spinner CLI
 
 <p>
-<img src="https://img.shields.io/badge/Version-1.0.4-blue" alt="Version 1.0.4">
+<img src="https://img.shields.io/badge/Version-1.1.0-blue" alt="Version 1.1.0">
 </p>
 
 A streamlined environment management tool for PHP developers.
@@ -21,15 +21,12 @@ Effortlessly create custom Docker environments for each of your PHP projects. Ou
 
 - **PHP 8.4** (includes XDebug & OpCache)
 - **Nginx**
-- **SQLite3**
+- **MySQL 9.3**
 - **NodeJS 23** (Node, NPM, & NPX)
 
 Your project directory is automatically mounted to the PHP container, and the `public` directory is served via Nginx at 
 `http://localhost:<nginx-port>`. Access the container directly from your terminal to execute unit tests or other 
 commands, all within an isolated environment.
-
-> **Note:** Loom Spinner CLI is in early development. For now, only SQLite is supported as the database, but more options 
-> are on the way in future updates.
 
 # Installation
 

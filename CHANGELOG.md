@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2025-04-24
+### Added
+- New database option: MySQL.
+- New configuration option: `options.environment.database.rootPassword`.
+
+### Changed
+- Changed the default database for new environments to MySQL (from SQLite).
+
 ## [1.0.4] - 2025-04-24
 ### Fixed
 - Fixed a critical autoloading issue after the package is globally installed.

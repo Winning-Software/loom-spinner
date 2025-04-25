@@ -13,7 +13,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
     /**
      * @throws \Exception
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config, private array $ports)
     {
         return parent::__construct($config->getDataDirectory() . '/docker-compose.yaml', $config);
     }
@@ -25,8 +25,16 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
     {
         $this->content = $this->config->getConfigFileContents('php.yaml');
 
-        if ($this->config->isDatabaseEnabled($input) && in_array($this->config->getDatabaseDriver($input), ['sqlite3', 'sqlite'])) {
-            $this->addSqliteDatabaseConfig();
+        if ($this->config->isDatabaseEnabled($input)) {
+            $databaseDriver = strtolower($this->config->getDatabaseDriver($input));
+
+            if (in_array($databaseDriver, ['sqlite3', 'sqlite'])) {
+                $this->addSqliteDatabaseConfig();
+            }
+
+            if ($databaseDriver === 'mysql') {
+                $this->addMysqlDatabaseConfig();
+            }
         }
 
         if ($this->config->isServerEnabled($input)) {
@@ -55,5 +63,13 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         $sqlLiteConfig = $this->config->getConfigFileContents('sqlite.yaml');
         $sqlLiteConfig = str_replace('volumes:', '', $sqlLiteConfig);
         $this->content .= $sqlLiteConfig;
+    }
+
+    private function addMysqlDatabaseConfig(): void
+    {
+        $mysqlConfig = str_replace('services:', '', $this->config->getConfigFileContents('mysql.yaml'));
+        $mysqlConfig = str_replace('${ROOT_PASSWORD}', $this->config->getEnvironmentOption('database', 'rootPassword'), $mysqlConfig);
+        $mysqlConfig = str_replace('${DATABASE_PORT}', (string) $this->ports['database'], $mysqlConfig);
+        $this->content.= $mysqlConfig;
     }
 }

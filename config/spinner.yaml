@@ -9,4 +9,5 @@ options:
       enabled: true
     database:
       enabled: true
-      driver: sqlite3
+      driver: mysql
+      rootPassword: docker

@@ -28,7 +28,8 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->portGenerator = new PortGenerator();
         $this->ports = [
             'php' => $this->portGenerator->generateRandomPort(),
-            'nginx' => $this->portGenerator->generateRandomPort(),
+            'server' => $this->portGenerator->generateRandomPort(),
+            'database' => $this->portGenerator->generateRandomPort(),
         ];
 
         parent::__construct();
@@ -66,7 +67,7 @@ class SpinCommand extends AbstractSpinnerCommand
                 InputOption::VALUE_NONE,
                 'Set this flag to not include a database for your environment.'
             )
-            ->addOption('database', null, InputOption::VALUE_REQUIRED, 'The type of database to use (e.g., mysql, postgresql, sqlite).', null, ['sqlite'])
+            ->addOption('database', null, InputOption::VALUE_REQUIRED, 'The type of database to use (e.g., mysql, sqlite).', null, ['mysql', 'sqlite'])
             ->addOption('node', null, InputOption::VALUE_OPTIONAL, 'The Node.js version to use (e.g. 20).');
     }
 
@@ -154,7 +155,9 @@ class SpinCommand extends AbstractSpinnerCommand
                 $input->getArgument('name'),
                 $this->config->getPhpVersion($input),
                 $this->ports['php'],
-                $this->ports['nginx'],
+                $this->ports['server'],
+                $this->ports['database'],
+                $this->config->getEnvironmentOption('database', 'rootPassword')
             )
         );
     }
@@ -166,7 +169,7 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $this->createProjectDataSubDirectory('php-fpm');
 
-        (new DockerComposeFileBuilder($this->config))->build($input)->save();
+        (new DockerComposeFileBuilder($this->config, $this->ports))->build($input)->save();
     }
 
     /**
