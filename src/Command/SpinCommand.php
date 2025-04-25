@@ -28,7 +28,8 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->portGenerator = new PortGenerator();
         $this->ports = [
             'php' => $this->portGenerator->generateRandomPort(),
-            'nginx' => $this->portGenerator->generateRandomPort(),
+            'server' => $this->portGenerator->generateRandomPort(),
+            'database' => $this->portGenerator->generateRandomPort(),
         ];
 
         parent::__construct();
@@ -154,7 +155,9 @@ class SpinCommand extends AbstractSpinnerCommand
                 $input->getArgument('name'),
                 $this->config->getPhpVersion($input),
                 $this->ports['php'],
-                $this->ports['nginx'],
+                $this->ports['server'],
+                $this->ports['database'],
+                $this->config->getEnvironmentOption('database', 'rootPassword')
             )
         );
     }
@@ -166,7 +169,7 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $this->createProjectDataSubDirectory('php-fpm');
 
-        (new DockerComposeFileBuilder($this->config))->build($input)->save();
+        (new DockerComposeFileBuilder($this->config, $this->ports))->build($input)->save();
     }
 
     /**

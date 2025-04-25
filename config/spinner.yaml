@@ -10,3 +10,4 @@ options:
     database:
       enabled: true
       driver: sqlite3
+      rootPassword: docker

@@ -31,9 +31,11 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
             $this->config->getConfigFileContents('php-fpm/opcache.ini')
         );
 
-        if ($this->config->isDatabaseEnabled($input) && in_array($this->config->getDatabaseDriver($input), ['sqlite3', 'sqlite'])) {
-            $this->addNewLine();
-            $this->content .= $this->config->getConfigFileContents('php-fpm/Sqlite.Dockerfile');
+        if ($this->config->isDatabaseEnabled($input)) {
+            if (in_array($this->config->getDatabaseDriver($input), ['sqlite3', 'sqlite'])) {
+                $this->addNewLine();
+                $this->content .= $this->config->getConfigFileContents('php-fpm/Sqlite.Dockerfile');
+            }
         }
 
         $this->content = str_replace('${NODE_VERSION}', (string) $this->config->getNodeVersion($input), $this->content);
