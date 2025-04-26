@@ -13,12 +13,8 @@
         }
     },
     "require": {
-        "loomlabs/utility.collection": "^1.1",
         "symfony/console": "^7.2",
         "symfony/yaml": "^7.2"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^12.1"
     },
     "bin": [
         "bin/loom"
