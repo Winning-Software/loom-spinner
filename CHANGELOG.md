@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2025-04-26
+### Fixed
+- Fixed a critical bug where environments would not build correctly if using a SQLite database.
+
 ## [1.1.1] - 2025-04-26
 ### Fixed
 - Fixed a critical bug where environments could not be destroyed if using a MySQL database.
@@ -28,7 +32,7 @@ All notable changes to this project will be documented in this file.
 - Added information on `spin:down` command to README.
 
 ### Changed
-- Minor documentation tweak to include link to Wiki on Packagist.
+- Minor documentation tweak to include a link to the Wiki on Packagist.
 
 ## [1.0.1] - 2025-04-24
 ### Changed
