@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2025-04-26
+### Fixed
+- Fixed a critical bug where environments could not be destroyed if using a MySQL database.
+- Fixed a critical bug where PDO extensions were not installed in the container, causing MySQL driver errors.
+
 ## [1.1.0] - 2025-04-24
 ### Added
 - New database option: MySQL.
