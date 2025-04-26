@@ -9,4 +9,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
     volumes:
-      - ./data/${PROJECT_NAME}/mysql:/var/lib/mysql:cached
+      - mysql_data:/var/lib/mysql:cached
+    container_name: ${PROJECT_NAME}-mysql
+
+volumes:
+  mysql_data:

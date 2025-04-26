@@ -29,7 +29,8 @@ class DestroyCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        $this->config = new Config($input->getArgument('name'));
+        $projectName = $input->getArgument('name');
+        $this->config = new Config($projectName);
 
         if (!file_exists($this->config->getDataDirectory())) {
             $this->style->error('No project found with the provided name.');
@@ -38,7 +39,7 @@ class DestroyCommand extends AbstractSpinnerCommand
         }
 
         try {
-            passthru($this->buildDockerComposeCommand('down', false, false));
+            passthru($this->buildDockerComposeCommand('down -v', false, false));
             recursive_rmdir($this->config->getDataDirectory());
         } catch (\Exception $exception) {
             $this->style->error('An error occurred while destroying the project: ' . $exception->getMessage());

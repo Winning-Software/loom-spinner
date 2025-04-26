@@ -1,0 +1,1 @@
+RUN docker-php-ext-install mysqli pdo pdo_mysql > /dev/null 2>&1

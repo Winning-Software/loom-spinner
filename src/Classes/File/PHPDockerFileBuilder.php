@@ -36,13 +36,18 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
                 $this->addNewLine();
                 $this->content .= $this->config->getConfigFileContents('php-fpm/Sqlite.Dockerfile');
             }
+
+            if ($this->config->getDatabaseDriver($input) ==='mysql') {
+                $this->addNewLine();
+                $this->content .= $this->config->getConfigFileContents('php-fpm/MySQL.Dockerfile');
+            }
         }
 
         $this->content = str_replace('${NODE_VERSION}', (string) $this->config->getNodeVersion($input), $this->content);
 
         if ($this->config->isXdebugEnabled($input)) {
             $this->addNewLine();
-            $this->content .= $this->config->getConfigFileContents('php-fpm/Xdebug.Dockerfile');
+            $this->content .= $this->config->getConfigFileContents('php-fpm/XDebug.Dockerfile');
             file_put_contents(
                 $this->config->getDataDirectory() . '/php-fpm/xdebug.ini',
                 $this->config->getConfigFileContents('php-fpm/xdebug.ini')

@@ -25,6 +25,9 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
     {
         $this->content = $this->config->getConfigFileContents('php.yaml');
 
+        if ($this->config->isServerEnabled($input)) {
+            $this->addNginxConfig();
+        }
         if ($this->config->isDatabaseEnabled($input)) {
             $databaseDriver = strtolower($this->config->getDatabaseDriver($input));
 
@@ -35,10 +38,6 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
             if ($databaseDriver === 'mysql') {
                 $this->addMysqlDatabaseConfig();
             }
-        }
-
-        if ($this->config->isServerEnabled($input)) {
-            $this->addNginxConfig();
         }
 
         return $this;
