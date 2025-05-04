@@ -5,7 +5,7 @@
 # Loom Spinner CLI
 
 <p>
-<img src="https://img.shields.io/badge/Version-1.1.2-blue" alt="Version 1.1.2">
+<img src="https://img.shields.io/badge/Version-1.1.3-blue" alt="Version 1.1.3">
 </p>
 
 A streamlined environment management tool for PHP developers.
