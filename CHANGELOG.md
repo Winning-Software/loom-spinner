@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.3] - 2025-05-04
+### Fixed
+- Fixed a typo causing XDebug installation to fail inside the PHP-FPM container.
+
 ## [1.1.2] - 2025-04-26
 ### Fixed
 - Fixed a critical bug where environments would not build correctly if using a SQLite database.
