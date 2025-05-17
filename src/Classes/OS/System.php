@@ -48,10 +48,6 @@ class System
             return false;
         }
 
-        if (in_array($containerName . '-php', explode("\n", $output))) {
-            return true;
-        }
-
-        return false;
+        return in_array($containerName . '-php', explode("\n", $output));
     }
 }
