@@ -16,6 +16,7 @@ class Config
 
     public function __construct(string $projectName, ?string $projectWorkPath = null)
     {
+        $projectName = empty($projectName) ? '' : $projectName;
         $this->spinnerRootPath = dirname(__DIR__, 3);
         $this->configDirectory = $this->spinnerRootPath . '/config';
         $this->dataDirectory = $this->spinnerRootPath . '/data/environments/' . $projectName;
