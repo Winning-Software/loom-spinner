@@ -34,7 +34,9 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
 
             $projectDockerCompose = Yaml::parseFile(sprintf('%s/docker-compose.yaml', $projectPath));
 
-            $volumes = $projectDockerCompose['services']['nginx']['volumes'];
+            $volumes = isset($projectDockerCompose['services']['nginx']['volumes'])
+                ? $projectDockerCompose['services']['nginx']['volumes']
+                : [];
             $usesSqlite = false;
 
             foreach ($volumes as $volume) {
