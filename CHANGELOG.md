@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2025-05-17
+### Fixed
+- Fixed warning outputs that are displayed when an environment does not use Nginx.
+
 ## [1.2.1] - 2025-05-17
 ### Added
 - Added Server and Database information to the output of `env:list` command.

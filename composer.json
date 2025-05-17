@@ -1,7 +1,7 @@
 {
     "name": "loomlabs/loom-spinner-cli",
     "description": "A simple command-line Docker environment spinner for PHP.",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "autoload": {
         "psr-4": {
             "Loom\\Spinner\\": "src/"
