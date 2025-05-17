@@ -2,6 +2,7 @@
 <?php
 
 use Loom\Spinner\Command\DestroyCommand;
+use Loom\Spinner\Command\ListEnvironmentsCommand;
 use Loom\Spinner\Command\SpinCommand;
 use Loom\Spinner\Command\StartCommand;
 use Loom\Spinner\Command\StopCommand;
@@ -22,6 +23,7 @@ $application->add(new DestroyCommand());
 $application->add(new SpinCommand());
 $application->add(new StartCommand());
 $application->add(new StopCommand());
+$application->add(new ListEnvironmentsCommand());
 
 try {
     $application->run();

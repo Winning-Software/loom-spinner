@@ -39,4 +39,19 @@ class System
 
         return $dockerInfoError === 0;
     }
+
+    public function isDockerContainerRunning(string $containerName): bool
+    {
+        $output = shell_exec("docker ps --filter 'name=$containerName' --format '{{.Names}}'");
+
+        if (!$output) {
+            return false;
+        }
+
+        if (in_array($containerName . '-php', explode("\n", $output))) {
+            return true;
+        }
+
+        return false;
+    }
 }
