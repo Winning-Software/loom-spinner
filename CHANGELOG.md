@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2025-05-17
+### Added
+- Added Server and Database information to the output of `env:list` command.
+
 ## [1.2.0] - 2025-05-17
 ### Added
 - Added List Environments Command: `env:list`.
