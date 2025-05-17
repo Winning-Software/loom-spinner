@@ -6,7 +6,7 @@
 
 <p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-1.2.0-blue" alt="Version 1.2.0">
+<img src="https://img.shields.io/badge/Version-1.2.1-blue" alt="Version 1.2.1">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License%20GPL-3.0-or-later">
 </p>
@@ -74,6 +74,12 @@ To remove them completely:
 
 ```shell
 loom spin:down my-project
+```
+
+To list all of your _Spinner_ managed environments:
+
+```shell
+loom env:list
 ```
 
 Loom Spinner can be further customized with a set of simple configuration options. For a more detailed quick-start guide 

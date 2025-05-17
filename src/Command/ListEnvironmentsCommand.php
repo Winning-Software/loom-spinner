@@ -32,16 +32,33 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
             $projectConfig = Dotenv::createImmutable($projectPath);
             $projectConfig->load();
 
+            $projectDockerCompose = Yaml::parseFile(sprintf('%s/docker-compose.yaml', $projectPath));
+
+            $volumes = $projectDockerCompose['services']['nginx']['volumes'];
+            $usesSqlite = false;
+
+            foreach ($volumes as $volume) {
+                if (str_contains($volume, 'sqlite')) {
+                    $usesSqlite = true;
+                }
+            }
+
             $outputData[] = [
                 'Environment' => $file,
                 'PHP Version' => $_ENV['PHP_VERSION'],
+                'Server' => array_key_exists('nginx', $projectDockerCompose['services'])
+                    ? '✅'
+                    : '❌',
+                'Database' => array_key_exists('mysql', $projectDockerCompose['services'])
+                    ? 'MySQL'
+                    : ($usesSqlite? 'SQLite' : '❌'),
                 'Running' => $this->system->isDockerContainerRunning($file)
                     ? '✅'
                     : '❌'
             ];
         }
 
-        $this->style->table(['Environment', 'PHP Version', 'Running'], $outputData);
+        $this->style->table(['Environment', 'PHP Version', 'Server', 'Database', 'Running'], $outputData);
 
         return Command::SUCCESS;
     }
