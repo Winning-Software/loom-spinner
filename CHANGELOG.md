@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.4] - 2025-05-17
+## [1.2.0] - 2025-05-17
 ### Added
 - Added List Environments Command: `env:list`.
 - Added dev dependency: `loomlabs/badger`.
