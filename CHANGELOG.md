@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2025-05-18
+### Added
+- Added Attach Command: `spin:attach <name>`
+
 ## [1.2.2] - 2025-05-17
 ### Fixed
 - Fixed warning outputs that are displayed when an environment does not use Nginx.
