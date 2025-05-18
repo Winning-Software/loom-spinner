@@ -41,8 +41,16 @@ class SpinCommand extends AbstractSpinnerCommand
     protected function configure(): void
     {
         $this
-            ->addArgument('name', InputArgument::REQUIRED, 'The name for your Docker container.')
-            ->addArgument('path', InputArgument::REQUIRED, 'The absolute path to your projects root directory.')
+            ->addArgument(
+                'name',
+                InputArgument::REQUIRED,
+                'The name for your Docker container.'
+            )
+            ->addArgument(
+                'path',
+                InputArgument::REQUIRED,
+                'The absolute path to your projects root directory.'
+            )
             ->addOption(
                 'php',
                 null,

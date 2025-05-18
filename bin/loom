@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Loom\Spinner\Command\AttachCommand;
 use Loom\Spinner\Command\DestroyCommand;
 use Loom\Spinner\Command\ListEnvironmentsCommand;
 use Loom\Spinner\Command\SpinCommand;
@@ -24,6 +25,7 @@ $application->add(new SpinCommand());
 $application->add(new StartCommand());
 $application->add(new StopCommand());
 $application->add(new ListEnvironmentsCommand());
+$application->add(new AttachCommand());
 
 try {
     $application->run();
