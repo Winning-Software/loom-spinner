@@ -6,9 +6,9 @@
 
 <p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-1.3.0-blue" alt="Version 1.3.0">
+<img src="https://img.shields.io/badge/Version-1.3.1-blue" alt="Version 1.3.1">
 <!-- License Badge -->
-<img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License%20GPL-3.0-or-later">
+<img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
 </p>
 
 A streamlined environment management tool for PHP developers.
@@ -40,7 +40,7 @@ commands, all within an isolated environment.
 To install globally, run:
 
 ```shell
-composer global require loomlabs/loom-spinner-cli
+composer global require loomsoftware/loom-spinner
 ```
 
 # Usage
