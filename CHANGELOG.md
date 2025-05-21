@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2025-05-21
+### Changed
+- Update package for re-release as `loomsoftware/loom-spinner`.
+
 ## [1.3.0] - 2025-05-18
 ### Added
 - Added Attach Command: `spin:attach <name>`
