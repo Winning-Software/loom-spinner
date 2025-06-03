@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2025-06-03
+### Changed
+- Replaced emojis in `env:list` command output with coloured text.
+
 ## [1.3.1] - 2025-05-21
 ### Changed
 - Update package for re-release as `loomsoftware/loom-spinner`.

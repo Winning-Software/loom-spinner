@@ -49,14 +49,14 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
                 'Environment' => $file,
                 'PHP Version' => $_ENV['PHP_VERSION'],
                 'Server' => array_key_exists('nginx', $projectDockerCompose['services'])
-                    ? '✅'
-                    : '❌',
+                    ? '<fg=green>Nginx</>'
+                    : '<fg=red>N/A</>',
                 'Database' => array_key_exists('mysql', $projectDockerCompose['services'])
                     ? 'MySQL'
-                    : ($usesSqlite? 'SQLite' : '❌'),
+                    : ($usesSqlite? 'SQLite' : '<fg=red>N/A</>'),
                 'Running' => $this->system->isDockerContainerRunning($file)
-                    ? '✅'
-                    : '❌'
+                    ? '<fg=green>On</>'
+                    : '<fg=red>Off</>',
             ];
         }
 
