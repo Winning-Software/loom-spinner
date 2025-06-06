@@ -29,8 +29,6 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
     {
         $this->setStyle($input, $output);
 
-//        $this->style->title('Loom Spinner');
-
         if (!$this->system->isDockerEngineRunning()) {
             $this->style->error('It looks like the Docker Engine is not running. Please start it and try again.');
 
