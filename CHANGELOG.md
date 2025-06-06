@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.2] - 2025-06-06
+### Added
+- Added a project URL to the output of the `env:list` command.
+
 ## [1.4.1] - 2025-06-06
 ### Added
 - Added `--version` command.

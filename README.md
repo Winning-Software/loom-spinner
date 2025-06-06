@@ -6,7 +6,7 @@
 
 <p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-1.4.1-blue" alt="Version 1.4.1">
+<img src="https://img.shields.io/badge/Version-1.4.2-blue" alt="Version 1.4.2">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
 </p>

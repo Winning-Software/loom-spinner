@@ -61,10 +61,13 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
                 'Running' => $this->system->isDockerContainerRunning($file)
                     ? '<fg=green>On</>'
                     : '<fg=red>Off</>',
+                'URL' => array_key_exists('nginx', $projectDockerCompose['services'])
+                    ? sprintf('<fg=green>http://localhost:%s</>', $_ENV['SERVER_PORT'])
+                    : '<fg=red>N/A</>',
             ];
         }
 
-        $this->style->table(['Environment', 'PHP Version', 'Server', 'Database', 'Running'], $outputData);
+        $this->style->table(['Environment', 'PHP Version', 'Server', 'Database', 'Running', 'URL'], $outputData);
 
         return Command::SUCCESS;
     }
