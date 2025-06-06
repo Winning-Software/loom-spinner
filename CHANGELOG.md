@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.4.1] - 2025-06-03
+## [1.4.1] - 2025-06-06
 ### Added
 - Added `--version` command.
 
