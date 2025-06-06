@@ -25,6 +25,12 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
         $dataPath = $this->config->getDataDirectory();
         $outputData = [];
 
+        if (!file_exists($dataPath)) {
+            $this->style->info('No environments configured.');
+
+            return Command::SUCCESS;
+        }
+
         foreach (scandir($dataPath) as $file) {
             if (in_array($file, ['.', '..'])) continue;
 
@@ -34,9 +40,7 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
 
             $projectDockerCompose = Yaml::parseFile(sprintf('%s/docker-compose.yaml', $projectPath));
 
-            $volumes = isset($projectDockerCompose['services']['nginx']['volumes'])
-                ? $projectDockerCompose['services']['nginx']['volumes']
-                : [];
+            $volumes = $projectDockerCompose['services']['nginx']['volumes'] ?? [];
             $usesSqlite = false;
 
             foreach ($volumes as $volume) {

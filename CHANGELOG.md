@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2025-06-06
+### Added
+- Added `--version` command.
+
+### Fixed
+- Fixed `env:list` command output when no environments are configured.
+
 ## [1.4.0] - 2025-06-03
 ### Changed
 - Replaced emojis in `env:list` command output with coloured text.
