@@ -8,7 +8,6 @@ use Loom\Spinner\Classes\Config\Config;
 use Loom\Spinner\Classes\OS\System;
 use Loom\Spinner\Command\Interface\ConsoleCommandInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -30,7 +29,7 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
     {
         $this->setStyle($input, $output);
 
-        $this->style->title('Loom Spinner');
+//        $this->style->title('Loom Spinner');
 
         if (!$this->system->isDockerEngineRunning()) {
             $this->style->error('It looks like the Docker Engine is not running. Please start it and try again.');

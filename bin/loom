@@ -18,7 +18,13 @@ if (file_exists($localAutoloadPath)) {
     require $installedAutoloadPath;
 }
 
-$application = new Application('Loom Spinner');
+$composerJsonPath = sprintf('%s/composer.json', dirname(__DIR__));
+
+if (file_exists($composerJsonPath)) {
+    $composerJson = json_decode(file_get_contents($composerJsonPath), true);
+}
+
+$application = new Application('Loom Spinner', $composerJson['version'] ?? 'UNKNOWN');
 
 $application->add(new DestroyCommand());
 $application->add(new SpinCommand());
