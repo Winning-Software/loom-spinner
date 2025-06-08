@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [ 1.4.3] - 2025-06-08
+### Fixed
+- Fixed issue with `env:list` command always using the same `.env` config.
+- Now displays correct URL for each environment.
+
 ## [1.4.2] - 2025-06-06
 ### Added
 - Added a project URL to the output of the `env:list` command.
