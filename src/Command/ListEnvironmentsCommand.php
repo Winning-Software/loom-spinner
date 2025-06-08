@@ -35,7 +35,7 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
             if (in_array($file, ['.', '..'])) continue;
 
             $projectPath = sprintf('%s%s', $dataPath, $file);
-            $projectConfig = Dotenv::createImmutable($projectPath);
+            $projectConfig = Dotenv::createMutable($projectPath);
             $projectConfig->load();
 
             $projectDockerCompose = Yaml::parseFile(sprintf('%s/docker-compose.yaml', $projectPath));
