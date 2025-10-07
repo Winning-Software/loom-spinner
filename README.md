@@ -6,7 +6,7 @@
 
 <p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-1.4.4-blue" alt="Version 1.4.4">
+<img src="https://img.shields.io/badge/Version-1.5.0-blue" alt="Version 1.5.0">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
 </p>
@@ -88,7 +88,6 @@ To list all of your _Spinner_ managed environments:
 loom env:list
 ```
 
-Loom Spinner can be further customized with a set of simple configuration options. For a more detailed quick-start guide 
-or advanced configuration tips, check out the [project wiki](https://forge.winningsoftware.co.uk/LoomLabs/loom-spinner-cli/wiki).
+Loom Spinner can be further customized with a set of simple configuration options.
 
 Happy spinning! 🧵

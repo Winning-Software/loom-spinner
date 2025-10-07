@@ -40,7 +40,16 @@ class AttachCommand extends AbstractSpinnerCommand
 
         $this->style->info(sprintf('Attaching to project: %s', $input->getArgument('name')));
 
-        passthru(sprintf('docker exec -it %s-php bash', $input->getArgument('name')));
+        $cols = (int) exec('tput cols');
+        $rows = (int) exec('tput lines');
+
+        passthru(sprintf(
+            'docker exec -e TERM=xterm-256color -it %s-php bash -c \'stty cols %d rows %d; export PS1="\\[\\e[01;32m\\]\\u@%s\\[\\e[00m\\]:\\[\\e[01;34m\\]\\w\\[\\e[00m\\]\\$ "; exec bash --noprofile --norc -i\'',
+            $input->getArgument('name'),
+            $cols,
+            $rows,
+            $input->getArgument('name') . '.docker'
+        ));
 
         $this->style->newLine();
         $this->style->info('Exited PHP container. Returning to your host machine.');

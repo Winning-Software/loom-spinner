@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2025-10-07
+### Added
+- Colourise `user@hostname` inside container (when using `loom spin:attach` command).
+- Set host display name inside container.
+
+### Fixed
+- Fix for commands wrapping inside the container.
+
 ## [1.4.4] - 2025-06-23
 ### Fixed
 - No longer redirecting static assets to front controller.
