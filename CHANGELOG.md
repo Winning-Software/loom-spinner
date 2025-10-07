@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.1] - 2025-10-07
+### Added
+- List environments command now displays the local database port your environments are using.
+
 ## [1.5.0] - 2025-10-07
 ### Added
 - Colourise `user@hostname` inside container (when using `loom spin:attach` command).

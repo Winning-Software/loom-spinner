@@ -56,9 +56,9 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
                     ? '<fg=green>Nginx</>'
                     : '<fg=red>N/A</>',
                 'Database' => array_key_exists('mysql', $projectDockerCompose['services'])
-                    ? 'MySQL'
+                    ? sprintf('MySQL (%d)', $_ENV['DATABASE_PORT'])
                     : ($usesSqlite? 'SQLite' : '<fg=red>N/A</>'),
-                'Running' => $this->system->isDockerContainerRunning($file)
+                'Status' => $this->system->isDockerContainerRunning($file)
                     ? '<fg=green>On</>'
                     : '<fg=red>Off</>',
                 'URL' => array_key_exists('nginx', $projectDockerCompose['services'])
@@ -67,7 +67,11 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
             ];
         }
 
-        $this->style->table(['Environment', 'PHP Version', 'Server', 'Database', 'Running', 'URL'], $outputData);
+        if (!count($outputData)) {
+            $this->style->info('No environments configured.');
+        } else {
+            $this->style->table(['Environment', 'PHP Version', 'Server', 'Database', 'Status', 'URL'], $outputData);
+        }
 
         return Command::SUCCESS;
     }
