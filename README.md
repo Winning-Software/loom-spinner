@@ -6,7 +6,7 @@
 
 <p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-1.5.1-blue" alt="Version 1.5.1">
+<img src="https://img.shields.io/badge/Version-1.5.2-blue" alt="Version 1.5.2">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
 </p>
@@ -40,7 +40,7 @@ commands, all within an isolated environment.
 To install globally, run:
 
 ```shell
-composer global require loomsoftware/loom-spinner
+composer global require cloudbase/loom-spinner
 ```
 
 # Usage
