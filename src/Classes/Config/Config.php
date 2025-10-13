@@ -17,7 +17,7 @@ class Config
     public function __construct(string $projectName = '', private readonly ?string $projectWorkPath = null)
     {
         $this->spinnerRootPath = dirname(__DIR__, 3);
-        $this->configDirectory = $this->spinnerRootPath . '/config';
+        $this->configDirectory = sprintf('%s/config', $this->spinnerRootPath);
         $this->dataDirectory = sprintf('%s/.spinner/environments/%s', $this->getHomeDirectory(), $projectName);
     }
 
@@ -28,13 +28,13 @@ class Config
 
     public function getConfigFilePath(string $fileName): string
     {
-        return $this->configDirectory . '/' . $fileName;
+        return sprintf('%s/%s', $this->configDirectory, $fileName);
     }
 
     public function getConfigFileContents(string $fileName): string|null
     {
-        if (file_exists($this->configDirectory . '/' . $fileName)) {
-            return file_get_contents($this->configDirectory . '/' . $fileName);
+        if (file_exists($path = sprintf('%s/%s', $this->configDirectory, $fileName))) {
+            return file_get_contents($path);
         }
 
         return null;
@@ -127,8 +127,8 @@ class Config
 
     public function getProjectCustomConfig(): ?array
     {
-        if ($this->projectWorkPath && file_exists($this->projectWorkPath . '/spinner.yaml')) {
-            return Yaml::parseFile($this->projectWorkPath . '/spinner.yaml')['options']['environment'];
+        if ($this->projectWorkPath && file_exists($configFilePath = $this->getConfigYamlPath())) {
+            return Yaml::parseFile($configFilePath)['options']['environment'];
         }
 
         return null;
@@ -136,7 +136,7 @@ class Config
 
     protected function getDefaultConfig(): ?array
     {
-        return Yaml::parseFile($this->configDirectory . '/spinner.yaml')['options']['environment']
+        return Yaml::parseFile($this->getConfigYamlPath())['options']['environment']
             ?? null;
     }
 
@@ -151,5 +151,10 @@ class Config
         }
 
         throw new \RuntimeException('Unable to determine home directory.');
+    }
+
+    private function getConfigYamlPath(): string
+    {
+        return sprintf('%s/spinner.yaml', $this->configDirectory);
     }
 }
