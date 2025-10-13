@@ -12,18 +12,12 @@ class Config
     private string $spinnerRootPath;
     private string $configDirectory;
     private string $dataDirectory;
-    private ?string $projectWorkPath = null;
 
-    public function __construct(string $projectName, ?string $projectWorkPath = null)
+    public function __construct(string $projectName = '', private readonly ?string $projectWorkPath = null)
     {
-        $projectName = empty($projectName) ? '' : $projectName;
         $this->spinnerRootPath = dirname(__DIR__, 3);
         $this->configDirectory = $this->spinnerRootPath . '/config';
-        $this->dataDirectory = $this->spinnerRootPath . '/data/environments/' . $projectName;
-
-        if ($projectWorkPath) {
-            $this->projectWorkPath = $projectWorkPath;
-        }
+        $this->dataDirectory = sprintf('%s/.spinner/environments/%s', $this->getHomeDirectory(), $projectName);
     }
 
     public function getDataDirectory(): string
@@ -143,5 +137,14 @@ class Config
     {
         return Yaml::parseFile($this->configDirectory . '/spinner.yaml')['options']['environment']
             ?? null;
+    }
+
+    private function getHomeDirectory(): string
+    {
+        if ($home = getenv('HOME')) {
+            return $home;
+        }
+
+        return '';
     }
 }
