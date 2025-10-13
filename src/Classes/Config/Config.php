@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Classes\Config;
 
+use Loom\Spinner\Classes\OS\System;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -145,6 +146,10 @@ class Config
             return $home;
         }
 
-        return '';
+        if ((new System())->isWindows()) {
+            return getenv('USERPROFILE') ?: getenv('HOMEDRIVE') . getenv('HOMEPATH');
+        }
+
+        throw new \RuntimeException('Unable to determine home directory.');
     }
 }
