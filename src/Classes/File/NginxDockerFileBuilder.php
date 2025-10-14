@@ -17,9 +17,20 @@ class NginxDockerFileBuilder extends AbstractFileBuilder
         parent::__construct($config->getDataDirectory() . '/nginx/Dockerfile', $config);
     }
 
+    /**
+     * @param InputInterface $input
+     *
+     * @throws \Exception
+     *
+     * @return AbstractFileBuilder
+     */
     public function build(InputInterface $input): AbstractFileBuilder
     {
-        $this->content = $this->config->getConfigFileContents('nginx/Dockerfile');
+        if (!$nginxDockerfileContent = $this->config->getConfigFileContents('nginx/Dockerfile')) {
+            throw new \Exception('Could not locate the Nginx Dockerfile.');
+        }
+
+        $this->content = $nginxDockerfileContent;
 
         return $this;
     }

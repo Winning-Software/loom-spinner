@@ -57,8 +57,15 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
         return $this;
     }
 
+    /**
+     * @throws \Exception
+     */
     private function setInitialContent(): void
     {
-        $this->content = $this->config->getConfigFileContents('php-fpm/Dockerfile');
+        if (!$content = $this->config->getConfigFileContents('php-fpm/Dockerfile')) {
+            throw new \Exception('Could not locate the PHP Dockerfile.');
+        }
+
+        $this->content = $content;
     }
 }

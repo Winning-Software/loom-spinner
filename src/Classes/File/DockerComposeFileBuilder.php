@@ -25,13 +25,17 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
      */
     public function build(InputInterface $input): DockerComposeFileBuilder
     {
-        $this->content = $this->config->getConfigFileContents('php.yaml');
+        if (!$content = $this->config->getConfigFileContents('php.yaml')) {
+            throw new \Exception('Could not locate default PHP configuration file.');
+        }
+
+        $this->content = $content;
 
         if ($this->config->isServerEnabled($input)) {
             $this->addNginxConfig();
         }
-        if ($this->config->isDatabaseEnabled($input)) {
-            $databaseDriver = strtolower($this->config->getDatabaseDriver($input));
+        if ($this->config->isDatabaseEnabled($input) && $driver = $this->config->getDatabaseDriver($input)) {
+            $databaseDriver = strtolower($driver);
 
             if (in_array($databaseDriver, ['sqlite3', 'sqlite'])) {
                 $this->addSqliteDatabaseConfig();
@@ -45,12 +49,19 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         return $this;
     }
 
+    /**
+     * @throws \Exception
+     */
     private function addNginxConfig(): void
     {
+        if (!$nginxContent = $this->config->getConfigFileContents('nginx.yaml')) {
+            throw new \Exception('Could not locate the default Nginx configuration file.');
+        }
+
         $this->content .= str_replace(
             'services:',
             '',
-            $this->config->getConfigFileContents('nginx.yaml')
+            $nginxContent
         );
         $this->content = str_replace(
             './nginx/conf.d',
@@ -59,16 +70,29 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         );
     }
 
+    /**
+     * @throws \Exception
+     */
     private function addSqliteDatabaseConfig(): void
     {
-        $sqlLiteConfig = $this->config->getConfigFileContents('sqlite.yaml');
+        if (!$sqlLiteConfig = $this->config->getConfigFileContents('sqlite.yaml')) {
+            throw new \Exception('Could not locate the default SQLite configuration file.');
+        }
+
         $sqlLiteConfig = str_replace('volumes:', '', $sqlLiteConfig);
         $this->content .= $sqlLiteConfig;
     }
 
+    /**
+     * @throws \Exception
+     */
     private function addMysqlDatabaseConfig(): void
     {
-        $mysqlConfig = str_replace('services:', '', $this->config->getConfigFileContents('mysql.yaml'));
+        if (!$mysqlConfig = $this->config->getConfigFileContents('mysql.yaml')) {
+            throw new \Exception('Could not locate the default MySQL configuration file.');
+        }
+
+        $mysqlConfig = str_replace('services:', '', $mysqlConfig);
         $mysqlConfig = str_replace('${ROOT_PASSWORD}', $this->config->getEnvironmentOption('database', 'rootPassword'), $mysqlConfig);
         $mysqlConfig = str_replace('${DATABASE_PORT}', (string) $this->ports['database'], $mysqlConfig);
         $this->content.= $mysqlConfig;
