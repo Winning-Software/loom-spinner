@@ -21,7 +21,7 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        $this->config = new Config('');
+        $this->config = new Config();
         $dataPath = $this->config->getDataDirectory();
         $outputData = [];
 

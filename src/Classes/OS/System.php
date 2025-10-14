@@ -15,22 +15,22 @@ class System
 
     public function getName(): string
     {
-        return $this->operatingSystem;
+        return $this->isMacOS() ? OperatingSystem::MAC_OS : $this->operatingSystem;
     }
 
     public function isWindows(): bool
     {
-        return $this->operatingSystem === 'Windows';
+        return $this->operatingSystem === OperatingSystem::WINDOWS;
     }
 
     public function isMacOS(): bool
     {
-        return $this->operatingSystem === 'Darwin';
+        return $this->operatingSystem === OperatingSystem::DARWIN;
     }
 
     public function isLinux(): bool
     {
-        return $this->operatingSystem === 'Linux';
+        return $this->operatingSystem === OperatingSystem::LINUX;
     }
 
     public function isDockerEngineRunning(): bool

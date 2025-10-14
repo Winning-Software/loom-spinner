@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2025-10-14
+### Changed
+- Implemented code standards tools (PHP Stan).
+
+### Fixed
+- Data now persists between updates.
+
 ## [1.5.2] - 2025-10-08
 ### Changed
 - Changed package namespace to `cloudbase/loom-spinner`.

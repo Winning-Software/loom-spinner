@@ -20,7 +20,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SpinCommand extends AbstractSpinnerCommand
 {
     private PortGenerator $portGenerator;
+
+    /**
+     * @var array<string, int>
+     */
     private array $ports;
+
     private string $projectWorkPath = '';
 
     public function __construct()
@@ -155,10 +160,14 @@ class SpinCommand extends AbstractSpinnerCommand
      */
     private function createEnvironmentFile(InputInterface $input): void
     {
+        if (!$envTemplateContents = $this->config->getConfigFileContents('.template.env')) {
+            throw new \Exception('Could not locate the default .env template.');
+        }
+
         file_put_contents(
             $this->config->getDataDirectory() . '/.env',
             sprintf(
-                $this->config->getConfigFileContents('.template.env'),
+                $envTemplateContents,
                 $this->projectWorkPath,
                 $input->getArgument('name'),
                 $this->config->getPhpVersion($input),

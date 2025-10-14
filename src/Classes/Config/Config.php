@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Classes\Config;
 
+use Loom\Spinner\Classes\OS\System;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -12,18 +13,12 @@ class Config
     private string $spinnerRootPath;
     private string $configDirectory;
     private string $dataDirectory;
-    private ?string $projectWorkPath = null;
 
-    public function __construct(string $projectName, ?string $projectWorkPath = null)
+    public function __construct(string $projectName = '', private readonly ?string $projectWorkPath = null)
     {
-        $projectName = empty($projectName) ? '' : $projectName;
         $this->spinnerRootPath = dirname(__DIR__, 3);
-        $this->configDirectory = $this->spinnerRootPath . '/config';
-        $this->dataDirectory = $this->spinnerRootPath . '/data/environments/' . $projectName;
-
-        if ($projectWorkPath) {
-            $this->projectWorkPath = $projectWorkPath;
-        }
+        $this->configDirectory = sprintf('%s/config', $this->spinnerRootPath);
+        $this->dataDirectory = sprintf('%s/.spinner/environments/%s', $this->getHomeDirectory(), $projectName);
     }
 
     public function getDataDirectory(): string
@@ -33,13 +28,13 @@ class Config
 
     public function getConfigFilePath(string $fileName): string
     {
-        return $this->configDirectory . '/' . $fileName;
+        return sprintf('%s/%s', $this->configDirectory, $fileName);
     }
 
     public function getConfigFileContents(string $fileName): string|null
     {
-        if (file_exists($this->configDirectory . '/' . $fileName)) {
-            return file_get_contents($this->configDirectory . '/' . $fileName);
+        if (file_exists($path = sprintf('%s/%s', $this->configDirectory, $fileName))) {
+            return file_get_contents($path) ?: null;
         }
 
         return null;
@@ -130,18 +125,42 @@ class Config
         return $this->getDefaultConfig()[$service][$option] ?? null;
     }
 
+    /**
+     * @return array<string, array<string, boolean|float|int|string>>|null
+     */
     public function getProjectCustomConfig(): ?array
     {
-        if ($this->projectWorkPath && file_exists($this->projectWorkPath . '/spinner.yaml')) {
-            return Yaml::parseFile($this->projectWorkPath . '/spinner.yaml')['options']['environment'];
+        if ($this->projectWorkPath && file_exists($configFilePath = $this->getConfigYamlPath())) {
+            return Yaml::parseFile($configFilePath)['options']['environment'];
         }
 
         return null;
     }
 
+    /**
+     * @return array<string, array<string, boolean|float|int|string>>|null
+     */
     protected function getDefaultConfig(): ?array
     {
-        return Yaml::parseFile($this->configDirectory . '/spinner.yaml')['options']['environment']
+        return Yaml::parseFile($this->getConfigYamlPath())['options']['environment']
             ?? null;
+    }
+
+    private function getHomeDirectory(): string
+    {
+        if ($home = getenv('HOME')) {
+            return $home;
+        }
+
+        if ((new System())->isWindows()) {
+            return getenv('USERPROFILE') ?: getenv('HOMEDRIVE') . getenv('HOMEPATH');
+        }
+
+        throw new \RuntimeException('Unable to determine home directory.');
+    }
+
+    private function getConfigYamlPath(): string
+    {
+        return sprintf('%s/spinner.yaml', $this->configDirectory);
     }
 }

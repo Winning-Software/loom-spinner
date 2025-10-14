@@ -64,3 +64,4 @@ function recursive_rmdir(string $dir): void
     }
     rmdir($dir);
 }
+
