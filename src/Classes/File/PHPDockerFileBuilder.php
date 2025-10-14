@@ -14,7 +14,7 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
      */
     public function __construct(Config $config)
     {
-        return parent::__construct($config->getDataDirectory() . '/php-fpm/Dockerfile', $config);
+        parent::__construct($config->getDataDirectory() . '/php-fpm/Dockerfile', $config);
     }
 
     /**

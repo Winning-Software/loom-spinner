@@ -14,7 +14,7 @@ class NginxDockerFileBuilder extends AbstractFileBuilder
      */
     public function __construct(Config $config)
     {
-        return parent::__construct($config->getDataDirectory() . '/nginx/Dockerfile', $config);
+        parent::__construct($config->getDataDirectory() . '/nginx/Dockerfile', $config);
     }
 
     public function build(InputInterface $input): AbstractFileBuilder

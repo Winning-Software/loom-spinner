@@ -8,6 +8,7 @@
     }
   },
   "scripts": {
+    "stan": "./vendor/bin/phpstan analyse -c phpstan.neon",
     "badge": "./vendor/bin/badger badge:version . && ./vendor/bin/badger badge:license ."
   },
   "require": {
@@ -17,7 +18,8 @@
     "ext-sockets": "*"
   },
   "require-dev": {
-    "loomsoftware/badger": "^1.0"
+    "loomsoftware/badger": "^1.0",
+    "phpstan/phpstan": "^2.1"
   },
   "bin": [
     "bin/loom"

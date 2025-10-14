@@ -14,7 +14,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
      */
     public function __construct(Config $config, private array $ports)
     {
-        return parent::__construct($config->getDataDirectory() . '/docker-compose.yaml', $config);
+        parent::__construct($config->getDataDirectory() . '/docker-compose.yaml', $config);
     }
 
     /**

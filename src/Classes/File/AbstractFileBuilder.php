@@ -14,7 +14,6 @@ abstract class AbstractFileBuilder implements FileBuilderInterface
 
     public function __construct(protected string $path, protected Config $config)
     {
-        return $this;
     }
 
     abstract public function build(InputInterface $input): AbstractFileBuilder;
