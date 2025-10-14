@@ -10,9 +10,12 @@ use Symfony\Component\Console\Input\InputInterface;
 class DockerComposeFileBuilder extends AbstractFileBuilder
 {
     /**
+     * @param Config $config
+     * @param array<string, int> $ports
+     *
      * @throws \Exception
      */
-    public function __construct(Config $config, private array $ports)
+    public function __construct(Config $config, private readonly array $ports)
     {
         parent::__construct($config->getDataDirectory() . '/docker-compose.yaml', $config);
     }

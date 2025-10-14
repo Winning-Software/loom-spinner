@@ -20,7 +20,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SpinCommand extends AbstractSpinnerCommand
 {
     private PortGenerator $portGenerator;
+
+    /**
+     * @var array<string, int>
+     */
     private array $ports;
+
     private string $projectWorkPath = '';
 
     public function __construct()

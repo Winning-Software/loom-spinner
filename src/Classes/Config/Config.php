@@ -125,6 +125,9 @@ class Config
         return $this->getDefaultConfig()[$service][$option] ?? null;
     }
 
+    /**
+     * @return array<string, array<string, boolean|float|int|string>>|null
+     */
     public function getProjectCustomConfig(): ?array
     {
         if ($this->projectWorkPath && file_exists($configFilePath = $this->getConfigYamlPath())) {
@@ -134,6 +137,9 @@ class Config
         return null;
     }
 
+    /**
+     * @return array<string, array<string, boolean|float|int|string>>|null
+     */
     protected function getDefaultConfig(): ?array
     {
         return Yaml::parseFile($this->getConfigYamlPath())['options']['environment']
