@@ -34,7 +34,7 @@ class Config
     public function getConfigFileContents(string $fileName): string|null
     {
         if (file_exists($path = sprintf('%s/%s', $this->configDirectory, $fileName))) {
-            return file_get_contents($path);
+            return file_get_contents($path) ?: null;
         }
 
         return null;
