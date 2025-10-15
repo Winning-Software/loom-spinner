@@ -164,6 +164,8 @@ class SpinCommand extends AbstractSpinnerCommand
         if ($this->config->isServerEnabled($input)) {
             $this->style->text('Add the following line to /etc/hosts to enable your application:');
             $this->style->text(sprintf('127.0.0.1 %s.spinner', $input->getArgument('name')));
+            $this->style->newLine();
+            $this->style->text(sprintf('Or run: sudo loom env:hosts:add %s', $input->getArgument('name')));
         }
 
         return Command::SUCCESS;

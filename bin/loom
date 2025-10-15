@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Loom\Spinner\Command\AddHostsEntryCommand;
 use Loom\Spinner\Command\AttachCommand;
 use Loom\Spinner\Command\DestroyCommand;
 use Loom\Spinner\Command\ListEnvironmentsCommand;
@@ -19,9 +20,17 @@ if (file_exists($localAutoloadPath)) {
 }
 
 $composerJsonPath = sprintf('%s/composer.json', dirname(__DIR__));
+$composerJson = null;
 
 if (file_exists($composerJsonPath)) {
-    $composerJson = json_decode(file_get_contents($composerJsonPath), true);
+    try {
+        if (!$composerJsonRaw = file_get_contents($composerJsonPath)) {
+            throw new \Exception('Could not find the composer.json file');
+        }
+        $composerJson = json_decode($composerJsonRaw, true);
+    } catch (\Exception $exception) {
+        exit;
+    }
 }
 
 $application = new Application('Loom Spinner', $composerJson['version'] ?? 'UNKNOWN');
@@ -32,6 +41,7 @@ $application->add(new StartCommand());
 $application->add(new StopCommand());
 $application->add(new ListEnvironmentsCommand());
 $application->add(new AttachCommand());
+$application->add(new AddHostsEntryCommand());
 
 try {
     $application->run();
