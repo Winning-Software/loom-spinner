@@ -6,8 +6,11 @@ namespace Loom\Spinner\Command;
 
 use Loom\Spinner\Classes\Config\Config;
 use Loom\Spinner\Classes\File\DockerComposeFileBuilder;
+use Loom\Spinner\Classes\File\NginxConfigFileBuilder;
 use Loom\Spinner\Classes\File\NginxDockerFileBuilder;
 use Loom\Spinner\Classes\File\PHPDockerFileBuilder;
+use Loom\Spinner\Classes\File\ProjectNginxConfigFileBuilder;
+use Loom\Spinner\Classes\File\ProxyFileBuilder;
 use Loom\Spinner\Classes\OS\PortGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -111,8 +114,26 @@ class SpinCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        $this->style->success("Spinning up a new development environment...");
+        if (!file_exists($this->config->getProxyDirectory())) {
+            $this->style->info('Building reverse proxy...');
+            $this->createProxyDirectory();
+            $this->buildProxyDockerComposeFile($input);
+            $this->style->success('Proxy data created.');
+            exec(sprintf('docker compose -f %s/docker-compose.yaml up -d', $this->config->getProxyDirectory()));
+            $this->style->success('Started reverse proxy container');
+        }
 
+        $proxyContainerName = 'loom-spinner-reverse-proxy';
+        $status = shell_exec(sprintf('docker inspect -f "{{.State.Running}}" %s 2>/dev/null', $proxyContainerName));
+        $status = is_string($status) ? trim($status) : null;
+
+        if ($status !== 'true') {
+            $this->style->info('Starting reverse proxy container...');
+            exec(sprintf('docker compose -f %s/docker-compose.yaml up -d', $this->config->getProxyDirectory()));
+            $this->style->success('Reverse proxy is now running.');
+        }
+
+        $this->style->info('Spinning up a new development environment...');
         $this->style->text('Creating project data...');
 
         try {
@@ -122,12 +143,19 @@ class SpinCommand extends AbstractSpinnerCommand
 
             return Command::FAILURE;
         }
+
         $this->style->success('Project data created.');
-
         $this->style->text('Building Docker images...');
-        $command = $this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name')));
 
-        passthru($command);
+        passthru($this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name'))));
+        exec('docker exec loom-spinner-reverse-proxy nginx -s reload > /dev/null 2>&1');
+
+        $this->style->success('Environment built.');
+
+        if ($this->config->isServerEnabled($input)) {
+            $this->style->text('Add the following line to /etc/hosts to enable your application:');
+            $this->style->text(sprintf('127.0.0.1 %s.spinner', $input->getArgument('name')));
+        }
 
         return Command::SUCCESS;
     }
@@ -139,6 +167,8 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         $this->createProjectDataDirectory($input);
         $this->createEnvironmentFile($input);
+        $this->addToNetwork($input);
+        $this->createProjectNginxConfig($input);
         $this->buildDockerComposeFile($input);
         $this->buildDockerfiles($input);
     }
@@ -153,6 +183,21 @@ class SpinCommand extends AbstractSpinnerCommand
             0777,
             true
         );
+        $this->createProjectDataSubDirectory('nginx/conf.d');
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @throws \Exception
+     *
+     * @return void
+     */
+    private function addToNetwork(InputInterface $input): void
+    {
+        (new NginxConfigFileBuilder($this->config, $input->getArgument('name')))
+            ->build($input)
+            ->save();
     }
 
     /**
@@ -180,6 +225,43 @@ class SpinCommand extends AbstractSpinnerCommand
     }
 
     /**
+     * @param InputInterface $input
+     *
+     * @throws \Exception
+     *
+     * @return void
+     */
+    private function createProjectNginxConfig(InputInterface $input): void
+    {
+        (new ProjectNginxConfigFileBuilder($this->config, $input->getArgument('name')))
+            ->build($input)
+            ->save();
+    }
+
+    private function createProxyDirectory(): void
+    {
+        mkdir(
+            $this->config->getProxyDirectory() . '/conf.d',
+            0777,
+            true
+        );
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @throws \Exception
+     *
+     * @return void
+     */
+    private function buildProxyDockerComposeFile(InputInterface $input): void
+    {
+        (new ProxyFileBuilder($this->config->getProxyDirectory() . '/docker-compose.yaml', $this->config))
+            ->build($input)
+            ->save();
+    }
+
+    /**
      * @throws \Exception
      */
     private function buildDockerComposeFile(InputInterface $input): void
@@ -195,7 +277,6 @@ class SpinCommand extends AbstractSpinnerCommand
     private function buildDockerfiles(InputInterface $input): void
     {
         if ($this->config->isServerEnabled($input)) {
-            $this->createProjectDataSubDirectory('nginx');
             (new NginxDockerFileBuilder($this->config))->build($input)->save();
         }
 

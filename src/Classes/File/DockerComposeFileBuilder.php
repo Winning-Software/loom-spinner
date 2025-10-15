@@ -34,6 +34,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         if ($this->config->isServerEnabled($input)) {
             $this->addNginxConfig();
         }
+
         if ($this->config->isDatabaseEnabled($input) && $driver = $this->config->getDatabaseDriver($input)) {
             $databaseDriver = strtolower($driver);
 
@@ -45,6 +46,8 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
                 $this->addMysqlDatabaseConfig();
             }
         }
+
+        $this->addNetworks();
 
         return $this;
     }
@@ -65,7 +68,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         );
         $this->content = str_replace(
             './nginx/conf.d',
-            $this->config->getConfigFilePath('nginx/conf.d'),
+            $this->config->getDataDirectory() . '/nginx/conf.d',
             $this->content
         );
     }
@@ -96,5 +99,18 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         $mysqlConfig = str_replace('${ROOT_PASSWORD}', $this->config->getEnvironmentOption('database', 'rootPassword'), $mysqlConfig);
         $mysqlConfig = str_replace('${DATABASE_PORT}', (string) $this->ports['database'], $mysqlConfig);
         $this->content.= $mysqlConfig;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function addNetworks(): void
+    {
+        if (!$networksConfig = $this->config->getConfigFileContents('network.yaml')) {
+            throw new \Exception('Could not locate the default network configuration file.');
+        }
+
+        $this->addNewLine();
+        $this->content .= $networksConfig;
     }
 }

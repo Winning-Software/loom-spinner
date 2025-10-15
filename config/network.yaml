@@ -1,0 +1,4 @@
+networks:
+  default:
+    name: loom-spinner-network
+    external: true

@@ -62,7 +62,7 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
                     ? '<fg=green>On</>'
                     : '<fg=red>Off</>',
                 'URL' => array_key_exists('nginx', $projectDockerCompose['services'])
-                    ? sprintf('<fg=green>http://localhost:%s</>', $_ENV['SERVER_PORT'])
+                    ? sprintf('<fg=green>http://%s.spinner</>', $file)
                     : '<fg=red>N/A</>',
             ];
         }

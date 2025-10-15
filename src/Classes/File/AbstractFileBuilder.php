@@ -23,7 +23,6 @@ abstract class AbstractFileBuilder implements FileBuilderInterface
         file_put_contents($this->path, $this->content);
     }
 
-
     protected function addNewLine(): void
     {
         $this->content .= "\r\n\r\n";

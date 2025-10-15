@@ -1,0 +1,15 @@
+services:
+  reverse-proxy:
+    image: nginx:stable
+    container_name: loom-spinner-reverse-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d:cached
+    networks:
+      - spinner-net
+
+networks:
+  spinner-net:
+    name: loom-spinner-network
+    driver: bridge

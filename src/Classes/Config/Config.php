@@ -21,6 +21,11 @@ class Config
         $this->dataDirectory = sprintf('%s/.spinner/environments/%s', $this->getHomeDirectory(), $projectName);
     }
 
+    public function getProxyDirectory(): string
+    {
+        return sprintf('%s/.spinner/proxy', $this->getHomeDirectory());
+    }
+
     public function getDataDirectory(): string
     {
         return $this->dataDirectory;

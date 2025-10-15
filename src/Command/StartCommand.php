@@ -37,6 +37,16 @@ class StartCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
+        $proxyContainerName = 'loom-spinner-reverse-proxy';
+        $status = shell_exec(sprintf('docker inspect -f "{{.State.Running}}" %s 2>/dev/null', $proxyContainerName));
+        $status = is_string($status) ? trim($status) : null;
+
+        if ($status !== 'true') {
+            $this->style->info('Starting reverse proxy container...');
+            exec(sprintf('docker compose -f %s/docker-compose.yaml up -d', $this->config->getProxyDirectory()));
+            $this->style->success('Reverse proxy is now running.');
+        }
+
         try {
             passthru($this->buildDockerComposeCommand('start', false, false));
         } catch (\Exception $exception) {
