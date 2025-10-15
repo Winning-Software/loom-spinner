@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0] - 2025-10-16
+### Added
+- Added central proxy server and network to support pretty domains.
+- Projects now use http://{project-name}.spinner domains.
+- Added `env:hosts:add` command to facilitate new dev domains.
+- Added SSL support for users with `mkcert` installed.
+
+### Removed
+- No longer supports accessing projects via http://localhost:{port}.
+
 ## [2.0.0] - 2025-10-14
 ### Changed
 - Implemented code standards tools (PHP Stan).

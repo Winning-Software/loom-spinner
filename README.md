@@ -2,30 +2,37 @@
 
 <p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-2.0.0-blue" alt="Version 2.0.0">
+<img src="https://img.shields.io/badge/Version-3.0.0-blue" alt="Version 3.0.0">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
 </p>
 
-A streamlined environment management tool for PHP developers.
+Loom Spinner is a streamlined environment management tool for PHP developers.
 
-Loom Spinner makes it easy to launch minimal, thoughtfully pre-configured Docker containers for PHP development; helping 
-you enjoy a fast, consistent, and hassle-free workflow.
+It makes launching minimal, pre-configured Docker containers effortless, providing a fast, consistent, and hassle-free 
+workflow for your projects.
 
 Run simple commands from anywhere on your system to manage your environments.
+
+> This project is built for Linux and has not been fully tested on Windows or MacOS. Full Windows/MacOS support is 
+> planned for a future release.
 
 # At a Glance
 
 Effortlessly create custom Docker environments for each of your PHP projects. Out of the box, Loom Spinner provides:
 
-- **PHP 8.4** (includes XDebug & OpCache)
+- **PHP 8.4** (with XDebug & OpCache)
 - **Nginx**
 - **MySQL 9.3**
 - **NodeJS 23** (Node, NPM, & NPX)
 
-Your project directory is automatically mounted to the PHP container, and the `public` directory is served via Nginx at 
-`http://localhost:<nginx-port>`. Access the container directly from your terminal to execute unit tests or other 
-commands, all within an isolated environment.
+Your project directory is automatically mounted into the PHP container, and the `public` directory is served via Nginx at:
+
+```shell
+http://project-name.spinner
+``` 
+
+You can access the container directly from your terminal to run tests or other commands in an isolated environment.
 
 # Installation
 
@@ -39,51 +46,83 @@ To install globally, run:
 composer global require cloudbase/loom-spinner
 ```
 
+> **Optional HTTPS/SSL Support**
+> 
+> For prettified `https://<project>.spinner` URLs, install `mkcert` before using Loom Spinner.
+
+Linux example:
+
+```shell
+sudo apt install mkcert libnss3-tools
+mkcert -install
+```
+
+# Quick Start
+
+Spin up your project and add the hosts entry in a single sequence:
+
+```shell
+cd /path/to/my-project
+loom spin:up my-project .
+sudo loom env:hosts:add my-project
+```
+
+> ✅ This will create the Docker containers (PHP, Nginx, MySQL) and ensure your system can resolve http://my-project.spinner 
+> for clean URLs.
+
 # Usage
 
-Start Docker, then launch your project environment:
+Launch a new environment:
+
+```shell
+loom spin:up my-project /path/to/my-project
+```
+
+Or from the project directory:
 
 ```shell
 cd /path/to/my-project
 loom spin:up my-project .
 ```
 
-Check which ports your containers are using via Docker Desktop or by running `docker ps`.
+## Hosts Entry
 
-Once running, your project's public directory is accessible at `http://localhost:<nginx-container-port>`—you're ready to go!
-
-## Managing Your Environment
-
-To stop your containers:
+To access your project via the browser, add an entry to `/etc/hosts`:
 
 ```shell
-loom spin:stop my-project
+sudo loom env:hosts:add my-project
 ```
 
-To start them again:
+## Database Credentials
 
-```shell
-loom spin:start my-project
-```
+Your default database credentials are:
 
-To attach to your PHP container:
+| Username | Password |
+|----------|----------|
+| root     | docker   |
 
-```shell
-loom spin:attach my-project
-```
-
-To remove them completely:
-
-```shell
-loom spin:down my-project
-```
-
-To list all of your _Spinner_ managed environments:
+To see which port your database container is using, run:
 
 ```shell
 loom env:list
 ```
 
-Loom Spinner can be further customized with a set of simple configuration options.
+You can customise your credentials, see the [Configuration](https://github.com/CloudBaseHQ/loom-spinner/wiki/Configuration) 
+section of the documentation for more details.
+
+## Managing Your Environment
+
+| Action                  | Command                       |
+|-------------------------|-------------------------------|
+| Stop containers         | `loom spin:stop my-project`   |
+| Start containers        | `loom spin:start my-project`  |
+| Attach to PHP container | `loom spin:attach my-project` |
+| Destroy environment     | `loom spin:down my-project`   |
+| List all environments   | `loom env:list`               |
+
+---
+
+Loom Spinner can be further customized with a set of simple configuration options. For more detailed usage instructions,
+please consult the [documentation](https://github.com/CloudBaseHQ/loom-spinner/wiki).
 
 Happy spinning! 🧵
