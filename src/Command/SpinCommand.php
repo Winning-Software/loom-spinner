@@ -12,6 +12,7 @@ use Loom\Spinner\Classes\File\PHPDockerFileBuilder;
 use Loom\Spinner\Classes\File\ProjectNginxConfigFileBuilder;
 use Loom\Spinner\Classes\File\ProxyFileBuilder;
 use Loom\Spinner\Classes\OS\PortGenerator;
+use Loom\Spinner\Classes\ReverseProxyManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -123,16 +124,6 @@ class SpinCommand extends AbstractSpinnerCommand
             $this->style->success('Started reverse proxy container');
         }
 
-        $proxyContainerName = 'loom-spinner-reverse-proxy';
-        $status = shell_exec(sprintf('docker inspect -f "{{.State.Running}}" %s 2>/dev/null', $proxyContainerName));
-        $status = is_string($status) ? trim($status) : null;
-
-        if ($status !== 'true') {
-            $this->style->info('Starting reverse proxy container...');
-            exec(sprintf('docker compose -f %s/docker-compose.yaml up -d', $this->config->getProxyDirectory()));
-            $this->style->success('Reverse proxy is now running.');
-        }
-
         $this->style->info('Spinning up a new development environment...');
         $this->style->text('Creating project data...');
 
@@ -148,6 +139,7 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->style->text('Building Docker images...');
 
         passthru($this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name'))));
+        (new ReverseProxyManager($this->style))->startProxyContainerIfNotRunning();
         exec('docker exec loom-spinner-reverse-proxy nginx -s reload > /dev/null 2>&1');
 
         $this->style->success('Environment built.');

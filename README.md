@@ -1,7 +1,3 @@
-<p>
-<img src="https://forge.winningsoftware.co.uk/LoomLabs/loom-spinner-cli/media/branch/main/header.jpg" alt="Loom Spinner CLI Header Image & Logo" style="width: 100%; height: auto;">
-</p>
-
 # Loom Spinner CLI
 
 <p>
