@@ -140,6 +140,23 @@ class SpinCommand extends AbstractSpinnerCommand
 
         passthru($this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name'))));
         (new ReverseProxyManager($this->style))->startProxyContainerIfNotRunning();
+
+        exec('command -v mkcert', $output, $code);
+        if ($code === 0) {
+            $domain = $input->getArgument('name') . '.spinner';
+            $certDir = $this->config->getProxyDirectory() . '/certs';
+
+            if (!file_exists("$certDir/$domain.crt")) {
+                exec(sprintf(
+                    'mkcert -key-file %s/%s.key -cert-file %s/%s.crt %s',
+                    $certDir,
+                    $input->getArgument('name'),
+                    $certDir,
+                    $input->getArgument('name'),
+                    $domain
+                ));
+            }
+        }
         exec('docker exec loom-spinner-reverse-proxy nginx -s reload > /dev/null 2>&1');
 
         $this->style->success('Environment built.');
@@ -234,6 +251,11 @@ class SpinCommand extends AbstractSpinnerCommand
     {
         mkdir(
             $this->config->getProxyDirectory() . '/conf.d',
+            0777,
+            true
+        );
+        mkdir(
+            $this->config->getProxyDirectory() . '/certs',
             0777,
             true
         );
