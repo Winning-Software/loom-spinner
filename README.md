@@ -2,7 +2,7 @@
 
 <p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-3.0.0-blue" alt="Version 3.0.0">
+<img src="https://img.shields.io/badge/Version-3.1.0-blue" alt="Version 3.1.0">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
 </p>
@@ -29,7 +29,7 @@ Effortlessly create custom Docker environments for each of your PHP projects. Ou
 Your project directory is automatically mounted into the PHP container, and the `public` directory is served via Nginx at:
 
 ```shell
-http://project-name.spinner
+https://{project-name}.app
 ``` 
 
 You can access the container directly from your terminal to run tests or other commands in an isolated environment.
@@ -48,7 +48,7 @@ composer global require cloudbase/loom-spinner
 
 > **Optional HTTPS/SSL Support**
 > 
-> For prettified `https://<project>.spinner` URLs, install `mkcert` before using Loom Spinner.
+> For prettified `https://{project-name}.app` URLs, install `mkcert` before using Loom Spinner.
 
 Linux example:
 
@@ -67,7 +67,7 @@ loom spin:up my-project .
 sudo loom env:hosts:add my-project
 ```
 
-> ✅ This will create the Docker containers (PHP, Nginx, MySQL) and ensure your system can resolve http://my-project.spinner 
+> ✅ This will create the Docker containers (PHP, Nginx, MySQL) and ensure your system can resolve http://my-project.app 
 > for clean URLs.
 
 # Usage

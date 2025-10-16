@@ -143,7 +143,7 @@ class SpinCommand extends AbstractSpinnerCommand
 
         exec('command -v mkcert', $output, $code);
         if ($code === 0) {
-            $domain = $input->getArgument('name') . '.spinner';
+            $domain = $input->getArgument('name') . '.app';
             $certDir = $this->config->getProxyDirectory() . '/certs';
 
             if (!file_exists("$certDir/$domain.crt")) {
@@ -163,7 +163,7 @@ class SpinCommand extends AbstractSpinnerCommand
 
         if ($this->config->isServerEnabled($input)) {
             $this->style->text('Add the following line to /etc/hosts to enable your application:');
-            $this->style->text(sprintf('127.0.0.1 %s.spinner', $input->getArgument('name')));
+            $this->style->text(sprintf('127.0.0.1 %s.app', $input->getArgument('name')));
             $this->style->newLine();
             $this->style->text(sprintf('Or run: sudo loom env:hosts:add %s', $input->getArgument('name')));
         }

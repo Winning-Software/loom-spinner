@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2025-10-16
+### Changed
+- Changed TLD to .app for cleaner, generic dev URLs.
+
 ## [3.0.0] - 2025-10-16
 ### Added
 - Added central proxy server and network to support pretty URLs.

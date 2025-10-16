@@ -35,7 +35,7 @@ class AddHostsEntryCommand extends Command
 
         $hostsFile = '/etc/hosts';
         $sectionHeader = "# Spinner Managed Environments";
-        $entry = sprintf("127.0.0.1 %s.spinner", $projectName);
+        $entry = sprintf("127.0.0.1 %s.app", $projectName);
 
         $hostsContents = file_get_contents($hostsFile);
         if ($hostsContents === false) {
@@ -59,14 +59,14 @@ class AddHostsEntryCommand extends Command
         }
 
         if (in_array($entry, $existingEntries, true)) {
-            $style->info("Hosts entry already exists for {$projectName}.spinner");
+            $style->info("Hosts entry already exists for {$projectName}.app");
             return Command::SUCCESS;
         }
 
         array_splice($lines, $sectionIndex + 1, 0, $entry);
         file_put_contents($hostsFile, implode(PHP_EOL, $lines) . PHP_EOL, LOCK_EX);
 
-        $style->success("Added hosts entry for {$projectName}.spinner");
+        $style->success("Added hosts entry for {$projectName}.app");
 
         return Command::SUCCESS;
     }
