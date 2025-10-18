@@ -2,10 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.0] - 2025-10-18
+### Added
+- Added new `loom env:hosts:clean` command to cleanup host entries for non-existent environments.
+
+### Changed
+- Attempts to re-run `loom env:hosts:add` command with `sudo` if ran without.
+
 ## [3.1.1] - 2025-10-18
 ### Fixed
 - Fix for host resolution issue when running multiple environments.
-- Fixes issue #1
+- Fix for issue #1
 
 ## [3.1.0] - 2025-10-16
 ### Changed
@@ -13,7 +20,7 @@ All notable changes to this project will be documented in this file.
 
 ## [3.0.0] - 2025-10-16
 ### Added
-- Added central proxy server and network to support pretty URLs.
+- Added a central proxy server and network to support pretty URLs.
 - Projects now use http://{project-name}.spinner URLs.
 - Added `env:hosts:add` command to facilitate new dev URLs.
 - Added SSL support for users with `mkcert` installed.

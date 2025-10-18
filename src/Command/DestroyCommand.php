@@ -40,7 +40,7 @@ class DestroyCommand extends AbstractSpinnerCommand
 
         try {
             passthru($this->buildDockerComposeCommand('down -v', false, false));
-            recursive_rmdir($this->config->getDataDirectory());
+            $this->recursiveRmdir($this->config->getDataDirectory());
         } catch (\Exception $exception) {
             $this->style->error('An error occurred while destroying the project: ' . $exception->getMessage());
 
@@ -49,19 +49,18 @@ class DestroyCommand extends AbstractSpinnerCommand
 
         return Command::SUCCESS;
     }
-}
 
-function recursive_rmdir(string $dir): void
-{
-    if (!is_dir($dir)) return;
+    private function recursiveRmdir(string $dir): void
+    {
+        if (!is_dir($dir)) return;
 
-    $items = new \RecursiveIteratorIterator(
-        new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-        \RecursiveIteratorIterator::CHILD_FIRST
-    );
-    foreach ($items as $item) {
-        $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($items as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }
+        rmdir($dir);
     }
-    rmdir($dir);
 }
-
