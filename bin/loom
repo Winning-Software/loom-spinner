@@ -3,6 +3,7 @@
 
 use Loom\Spinner\Command\AddHostsEntryCommand;
 use Loom\Spinner\Command\AttachCommand;
+use Loom\Spinner\Command\CleanHostEntriesCommand;
 use Loom\Spinner\Command\DestroyCommand;
 use Loom\Spinner\Command\ListEnvironmentsCommand;
 use Loom\Spinner\Command\SpinCommand;
@@ -42,6 +43,7 @@ $application->add(new StopCommand());
 $application->add(new ListEnvironmentsCommand());
 $application->add(new AttachCommand());
 $application->add(new AddHostsEntryCommand());
+$application->add(new CleanHostEntriesCommand());
 
 try {
     $application->run();

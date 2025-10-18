@@ -2,7 +2,7 @@
 
 <p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-3.1.1-blue" alt="Version 3.1.1">
+<img src="https://img.shields.io/badge/Version-3.2.0-blue" alt="Version 3.2.0">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
 </p>
@@ -121,8 +121,5 @@ section of the documentation for more details.
 | List all environments   | `loom env:list`               |
 
 ---
-
-Loom Spinner can be further customized with a set of simple configuration options. For more detailed usage instructions,
-please consult the [documentation](https://github.com/CloudBaseHQ/loom-spinner/wiki).
 
 Happy spinning! 🧵

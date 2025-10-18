@@ -29,6 +29,24 @@ class AddHostsEntryCommand extends Command
         $projectName = $input->getArgument('name');
 
         if (function_exists('posix_getuid') && posix_getuid() !== 0) {
+            $scriptPath = $_SERVER['PHP_SELF'] ?? $_SERVER['SCRIPT_FILENAME'] ?? null;
+            
+            if ($scriptPath && file_exists($scriptPath)) {
+                $style->warning('This command requires elevated privileges.');
+                $style->note('Attempting to re-run with sudo...');
+                
+                $command = sprintf(
+                    'sudo -E env PATH="%s" %s %s %s',
+                    getenv('PATH'),
+                    PHP_BINARY,
+                    escapeshellarg($scriptPath),
+                    escapeshellarg('env:hosts:add') . ' ' . escapeshellarg($projectName)
+                );
+                
+                passthru($command, $exitCode);
+                return $exitCode;
+            }
+            
             $style->error('Please re-run this command with sudo.');
             return Command::FAILURE;
         }
