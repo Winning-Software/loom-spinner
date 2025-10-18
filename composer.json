@@ -1,7 +1,7 @@
 {
   "name": "cloudbase/loom-spinner",
   "description": "A simple command-line Docker environment spinner for PHP.",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "autoload": {
     "psr-4": {
       "Loom\\Spinner\\": "src/"
