@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Command;
 
+use Loom\Spinner\Classes\Config\Config;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,7 +55,9 @@ class CleanHostEntriesCommand extends Command
 
         $hostsFile = '/etc/hosts';
         $sectionHeader = '# Spinner Managed Environments';
-        $environmentsDir = $this->getEnvironmentsDirectory();
+
+        $config = new Config();
+        $environmentsDir = $config->getManagedEnvironmentsDirectory();
 
         $existingProjects = [];
         if (is_dir($environmentsDir)) {
@@ -166,17 +169,5 @@ class CleanHostEntriesCommand extends Command
         ));
 
         return Command::SUCCESS;
-    }
-
-    private function getEnvironmentsDirectory(): string
-    {
-        $home = getenv('HOME');
-        if (!$home) {
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                $home = getenv('USERPROFILE') ?: getenv('HOMEDRIVE') . getenv('HOMEPATH');
-            }
-        }
-        
-        return $home . '/.spinner/environments';
     }
 }
