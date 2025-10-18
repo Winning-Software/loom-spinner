@@ -4,7 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [3.1.1] - 2025-10-18
 ### Fixed
-- Fix for host resolution issue when running multiple environments:
+- Fix for host resolution issue when running multiple environments.
+- Fixes #1
 
 ## [3.1.0] - 2025-10-16
 ### Changed
