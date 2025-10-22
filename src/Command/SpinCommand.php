@@ -115,7 +115,7 @@ class SpinCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        if (!file_exists($this->config->getProxyDirectory())) {
+        if ($this->config->isServerEnabled($input) && !file_exists($this->config->getProxyDirectory())) {
             $this->style->info('Building reverse proxy...');
             $this->createProxyDirectory();
             $this->buildProxyDockerComposeFile($input);
@@ -141,23 +141,25 @@ class SpinCommand extends AbstractSpinnerCommand
         passthru($this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name'))));
         (new ReverseProxyManager($this->style))->startProxyContainerIfNotRunning();
 
-        exec('command -v mkcert', $output, $code);
-        if ($code === 0) {
-            $domain = $input->getArgument('name') . '.app';
-            $certDir = $this->config->getProxyDirectory() . '/certs';
+        if ($this->config->isServerEnabled($input)) {
+            exec('command -v mkcert', $output, $code);
+            if ($code === 0) {
+                $domain = $input->getArgument('name') . '.app';
+                $certDir = $this->config->getProxyDirectory() . '/certs';
 
-            if (!file_exists("$certDir/$domain.crt")) {
-                exec(sprintf(
-                    'mkcert -key-file %s/%s.key -cert-file %s/%s.crt %s',
-                    $certDir,
-                    $input->getArgument('name'),
-                    $certDir,
-                    $input->getArgument('name'),
-                    $domain
-                ));
+                if (!file_exists("$certDir/$domain.crt")) {
+                    exec(sprintf(
+                        'mkcert -key-file %s/%s.key -cert-file %s/%s.crt %s',
+                        $certDir,
+                        $input->getArgument('name'),
+                        $certDir,
+                        $input->getArgument('name'),
+                        $domain
+                    ));
+                }
             }
+            exec('docker exec loom-spinner-reverse-proxy nginx -s reload > /dev/null 2>&1');
         }
-        exec('docker exec loom-spinner-reverse-proxy nginx -s reload > /dev/null 2>&1');
 
         $this->style->success('Environment built.');
 

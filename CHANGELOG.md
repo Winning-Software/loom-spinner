@@ -2,9 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.1] - 2025-10-23
+### Changed
+- No longer creating or attempting to start the Nginx proxy server when `--disable-server` option is used.
+
+### Fixed
+- Fix for `npm` and `node` commands no longer working inside the container.
+
 ## [3.2.0] - 2025-10-18
 ### Added
-- Added new `loom env:hosts:clean` command to cleanup host entries for non-existent environments.
+- Added new `loom env:hosts:clean` command to clean up host entries for non-existent environments.
 
 ### Changed
 - Attempts to re-run `loom env:hosts:add` command with `sudo` if ran without.
@@ -16,17 +23,17 @@ All notable changes to this project will be documented in this file.
 
 ## [3.1.0] - 2025-10-16
 ### Changed
-- Changed TLD to .app for cleaner, generic dev URLs.
+- Changed TLD to `.app` for cleaner, generic dev URLs.
 
 ## [3.0.0] - 2025-10-16
 ### Added
 - Added a central proxy server and network to support pretty URLs.
-- Projects now use http://{project-name}.spinner URLs.
+- Projects now use `http://{project-name}.spinner` URLs.
 - Added `env:hosts:add` command to facilitate new dev URLs.
 - Added SSL support for users with `mkcert` installed.
 
 ### Removed
-- No longer supports accessing projects via http://localhost:{port}.
+- No longer supports accessing projects via `http://localhost:{port}`.
 
 ## [2.0.0] - 2025-10-14
 ### Changed
