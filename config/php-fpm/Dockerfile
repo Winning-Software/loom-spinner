@@ -31,4 +31,4 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | b
     && nvm install ${NODE_VERSION} \
     && nvm use ${NODE_VERSION}
 
-COPY --from=node:${NODE_VERSION} /usr/local/bin/npx /usr/local/bin/npx
+COPY --from=node:${NODE_VERSION} /usr/local /usr/local
