@@ -45,9 +45,9 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
             if ($databaseDriver === 'mysql') {
                 $this->addMysqlDatabaseConfig();
             }
-        }
 
-        $this->addNetworks();
+            $this->addNetworks();
+        }
 
         return $this;
     }
