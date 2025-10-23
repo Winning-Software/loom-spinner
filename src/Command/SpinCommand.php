@@ -139,9 +139,9 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->style->text('Building Docker images...');
 
         passthru($this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name'))));
-        (new ReverseProxyManager($this->style))->startProxyContainerIfNotRunning();
 
         if ($this->config->isServerEnabled($input)) {
+            (new ReverseProxyManager($this->style))->startProxyContainerIfNotRunning();
             exec('command -v mkcert', $output, $code);
             if ($code === 0) {
                 $domain = $input->getArgument('name') . '.app';
