@@ -1,11 +1,11 @@
 # Loom Spinner CLI
 
-<p>
+<div>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-3.2.1-blue" alt="Version 3.2.1">
+<img src="https://img.shields.io/badge/Version-3.2.2-blue" alt="Version 3.2.2">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
-</p>
+</div>
 
 Loom Spinner is a streamlined environment management tool for PHP developers.
 
