@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.2] - 2025-10-23
+### Fixed
+- Fix for Nginx proxy server attempting to start when using `--disable-server` option.
+
 ## [3.2.1] - 2025-10-23
 ### Changed
 - No longer creating or attempting to start the Nginx proxy server when `--disable-server` option is used.
