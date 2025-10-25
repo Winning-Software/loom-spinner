@@ -4,7 +4,7 @@ options:
       version: 8.4
       xdebug: true
     node:
-      version: 23
+      version: 25
     server:
       enabled: true
     database:

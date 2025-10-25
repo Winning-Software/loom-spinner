@@ -97,9 +97,25 @@ class SpinCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
+        $projectPath = $input->getArgument('path');
+        $projectName = $input->getArgument('name');
+        $currentDirectory = getcwd();
+
+        if (!is_string($projectPath) || $currentDirectory === false) {
+            $this->style->error('The provided project path does not exist.');
+
+            return Command::FAILURE;
+        }
+
+        if (!is_string($projectName) || $projectName === '') {
+            $this->style->error('The provided project name is invalid.');
+
+            return Command::FAILURE;
+        }
+
         $this->projectWorkPath = $input->getArgument('path') === '.'
-            ? getcwd()
-            : $input->getArgument('path');
+            ? $currentDirectory
+            : $projectPath;
 
         if (!file_exists($this->projectWorkPath)) {
             $this->style->error('The provided project path does not exist.');
@@ -107,7 +123,7 @@ class SpinCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        $this->config = new Config($input->getArgument('name'), $this->projectWorkPath);
+        $this->setConfig($input, $this->projectWorkPath);
 
         if (file_exists($this->config->getDataDirectory())) {
             $this->style->error('A project with the same name already exists.');
@@ -128,7 +144,7 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->style->text('Creating project data...');
 
         try {
-            $this->createProjectData($input);
+            $this->createProjectData($input, $projectName);
         } catch (\Exception $exception) {
             $this->style->error('Failed to create project data: '. $exception->getMessage());
 
@@ -138,22 +154,22 @@ class SpinCommand extends AbstractSpinnerCommand
         $this->style->success('Project data created.');
         $this->style->text('Building Docker images...');
 
-        passthru($this->buildDockerComposeCommand(sprintf('-p %s up', $input->getArgument('name'))));
+        passthru($this->buildDockerComposeCommand(sprintf('-p %s up', $projectName)));
 
         if ($this->config->isServerEnabled($input)) {
             (new ReverseProxyManager($this->style))->startProxyContainerIfNotRunning();
             exec('command -v mkcert', $output, $code);
             if ($code === 0) {
-                $domain = $input->getArgument('name') . '.app';
+                $domain = $projectName . '.app';
                 $certDir = $this->config->getProxyDirectory() . '/certs';
 
                 if (!file_exists("$certDir/$domain.crt")) {
                     exec(sprintf(
                         'mkcert -key-file %s/%s.key -cert-file %s/%s.crt %s',
                         $certDir,
-                        $input->getArgument('name'),
+                        $projectName,
                         $certDir,
-                        $input->getArgument('name'),
+                        $projectName,
                         $domain
                     ));
                 }
@@ -165,11 +181,11 @@ class SpinCommand extends AbstractSpinnerCommand
 
         if ($this->config->isServerEnabled($input)) {
             $this->style->text('Add the following line to /etc/hosts to enable your application:');
-            $this->style->text(sprintf('127.0.0.1 %s.app', $input->getArgument('name')));
+            $this->style->text(sprintf('127.0.0.1 %s.app', $projectName));
             $this->style->newLine();
             $this->style->text(sprintf(
                 'Or, in a terminal with elevated (sudo) privileges, run: loom env:hosts:add %s',
-                $input->getArgument('name')
+                $projectName
             ));
         }
 
@@ -179,12 +195,12 @@ class SpinCommand extends AbstractSpinnerCommand
     /**
      * @throws \Exception
      */
-    private function createProjectData(InputInterface $input): void
+    private function createProjectData(InputInterface $input, string $projectName): void
     {
         $this->createProjectDataDirectory($input);
-        $this->createEnvironmentFile($input);
-        $this->addToNetwork($input);
-        $this->createProjectNginxConfig($input);
+        $this->createEnvironmentFile($input, $projectName);
+        $this->addToNetwork($input, $projectName);
+        $this->createProjectNginxConfig($input, $projectName);
         $this->buildDockerComposeFile($input);
         $this->buildDockerfiles($input);
     }
@@ -204,14 +220,15 @@ class SpinCommand extends AbstractSpinnerCommand
 
     /**
      * @param InputInterface $input
+     * @param string $projectName
      *
      * @throws \Exception
      *
      * @return void
      */
-    private function addToNetwork(InputInterface $input): void
+    private function addToNetwork(InputInterface $input, string $projectName): void
     {
-        (new NginxConfigFileBuilder($this->config, $input->getArgument('name')))
+        (new NginxConfigFileBuilder($this->config, $projectName))
             ->build($input)
             ->save();
     }
@@ -219,10 +236,16 @@ class SpinCommand extends AbstractSpinnerCommand
     /**
      * @throws \Exception
      */
-    private function createEnvironmentFile(InputInterface $input): void
+    private function createEnvironmentFile(InputInterface $input, string $projectName): void
     {
         if (!$envTemplateContents = $this->config->getConfigFileContents('.template.env')) {
             throw new \Exception('Could not locate the default .env template.');
+        }
+
+        $rootDatabasePassword = $this->config->getEnvironmentOption('database', 'rootPassword');
+
+        if (!is_string($rootDatabasePassword) || $rootDatabasePassword === '') {
+            throw new \Exception('The root database password is invalid.');
         }
 
         file_put_contents(
@@ -230,26 +253,27 @@ class SpinCommand extends AbstractSpinnerCommand
             sprintf(
                 $envTemplateContents,
                 $this->projectWorkPath,
-                $input->getArgument('name'),
+                $projectName,
                 $this->config->getPhpVersion($input),
                 $this->ports['php'],
                 $this->ports['server'],
                 $this->ports['database'],
-                $this->config->getEnvironmentOption('database', 'rootPassword')
+                $rootDatabasePassword
             )
         );
     }
 
     /**
      * @param InputInterface $input
+     * @param string $projectName
      *
      * @throws \Exception
      *
      * @return void
      */
-    private function createProjectNginxConfig(InputInterface $input): void
+    private function createProjectNginxConfig(InputInterface $input, string $projectName): void
     {
-        (new ProjectNginxConfigFileBuilder($this->config, $input->getArgument('name')))
+        (new ProjectNginxConfigFileBuilder($this->config, $projectName))
             ->build($input)
             ->save();
     }

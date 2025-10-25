@@ -95,8 +95,14 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
             throw new \Exception('Could not locate the default MySQL configuration file.');
         }
 
+        $rootPassword = $this->config->getEnvironmentOption('database', 'rootPassword');
+
+        if (!is_string($rootPassword) || $rootPassword === '') {
+            throw new \Exception('The root database password is invalid.');
+        }
+
         $mysqlConfig = str_replace('services:', '', $mysqlConfig);
-        $mysqlConfig = str_replace('${ROOT_PASSWORD}', $this->config->getEnvironmentOption('database', 'rootPassword'), $mysqlConfig);
+        $mysqlConfig = str_replace('${ROOT_PASSWORD}', $rootPassword, $mysqlConfig);
         $mysqlConfig = str_replace('${DATABASE_PORT}', (string) $this->ports['database'], $mysqlConfig);
         $this->content.= $mysqlConfig;
     }

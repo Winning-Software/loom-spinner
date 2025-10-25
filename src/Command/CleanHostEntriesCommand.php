@@ -33,7 +33,7 @@ class CleanHostEntriesCommand extends Command
         if (function_exists('posix_getuid') && posix_getuid() !== 0) {
             $scriptPath = $_SERVER['PHP_SELF'] ?? $_SERVER['SCRIPT_FILENAME'] ?? null;
             
-            if ($scriptPath && file_exists($scriptPath)) {
+            if (is_string($scriptPath) && file_exists($scriptPath)) {
                 $style->warning('This command requires elevated privileges.');
                 $style->note('Attempting to re-run with sudo...');
                 

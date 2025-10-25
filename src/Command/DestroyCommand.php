@@ -29,8 +29,7 @@ class DestroyCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        $projectName = $input->getArgument('name');
-        $this->config = new Config($projectName);
+        $this->setConfig($input);
 
         if (!file_exists($this->config->getDataDirectory())) {
             $this->style->error('No project found with the provided name.');
@@ -59,6 +58,8 @@ class DestroyCommand extends AbstractSpinnerCommand
             \RecursiveIteratorIterator::CHILD_FIRST
         );
         foreach ($items as $item) {
+            if (!$item instanceof \SplFileInfo) continue;
+
             $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
         }
         rmdir($dir);

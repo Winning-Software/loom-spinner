@@ -29,7 +29,7 @@ class StopCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        $this->config = new Config($input->getArgument('name'));
+        $this->setConfig($input);;
 
         if (!file_exists($this->config->getDataDirectory())) {
             $this->style->error('No project found with the provided name.');

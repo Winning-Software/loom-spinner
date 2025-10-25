@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Command;
 
-use Loom\Spinner\Classes\Config\Config;
 use Loom\Spinner\Classes\ReverseProxyManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -30,7 +29,7 @@ class StartCommand extends AbstractSpinnerCommand
             return Command::FAILURE;
         }
 
-        $this->config = new Config($input->getArgument('name'));
+        $this->setConfig($input);
 
         if (!file_exists($this->config->getDataDirectory())) {
             $this->style->error('No project found with the provided name.');
@@ -42,7 +41,7 @@ class StartCommand extends AbstractSpinnerCommand
             passthru($this->buildDockerComposeCommand('start', false, false));
             (new ReverseProxyManager($this->style))->startProxyContainerIfNotRunning();
         } catch (\Exception $exception) {
-            $this->style->error('An error occurred while starting the project: ' . $exception->getMessage());
+            $this->style->error(sprintf('An error occurred while starting the project: %s', $exception->getMessage()));
 
             return Command::FAILURE;
         }
