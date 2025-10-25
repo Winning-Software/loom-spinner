@@ -4,6 +4,7 @@ services:
       context: ./php-fpm
       args:
         PHP_VERSION: ${PHP_VERSION}
+    image: ${PROJECT_NAME}-php:${PHP_VERSION}
     working_dir: /var/www/html
     extra_hosts:
       - host.docker.internal:host-gateway

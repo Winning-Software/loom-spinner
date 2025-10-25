@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.4] - 2025-10-25
+### Fixed
+- Force PHP containers to be recreated to ensure that the selected PHP version is used.
+
 ## [3.2.3] - 2025-10-23
 ### Changed
 - No longer requires network when using `--disable-server` option.
