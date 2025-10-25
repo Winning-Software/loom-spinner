@@ -104,7 +104,7 @@ class DockerComposeFileBuilder extends AbstractFileBuilder
         $mysqlConfig = str_replace('services:', '', $mysqlConfig);
         $mysqlConfig = str_replace('${ROOT_PASSWORD}', $rootPassword, $mysqlConfig);
         $mysqlConfig = str_replace('${DATABASE_PORT}', (string) $this->ports['database'], $mysqlConfig);
-        $this->content.= $mysqlConfig;
+        $this->content .= $mysqlConfig;
     }
 
     /**

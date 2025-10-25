@@ -9,6 +9,7 @@
   },
   "scripts": {
     "stan": "./vendor/bin/phpstan analyse -c phpstan.neon",
+    "cs": "./vendor/bin/php-cs-fixer fix --dry-run --diff --allow-risky=yes",
     "badge": "./vendor/bin/badger badge:version . && ./vendor/bin/badger badge:license ."
   },
   "require": {
@@ -19,7 +20,8 @@
   },
   "require-dev": {
     "loomsoftware/badger": "^1.0",
-    "phpstan/phpstan": "^2.1"
+    "phpstan/phpstan": "^2.1",
+    "friendsofphp/php-cs-fixer": "^3.89"
   },
   "bin": [
     "bin/loom"

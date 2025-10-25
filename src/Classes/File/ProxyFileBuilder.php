@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Classes\File;
 
-use Loom\Spinner\Classes\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 
 class ProxyFileBuilder extends AbstractFileBuilder

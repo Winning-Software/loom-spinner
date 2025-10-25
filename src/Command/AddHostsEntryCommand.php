@@ -50,20 +50,23 @@ class AddHostsEntryCommand extends Command
                 );
                 
                 passthru($command, $exitCode);
+
                 return $exitCode;
             }
             
             $style->error('Please re-run this command with sudo.');
+
             return Command::FAILURE;
         }
 
         $hostsFile = '/etc/hosts';
         $sectionHeader = "# Spinner Managed Environments";
         $entry = sprintf("127.0.0.1 %s.app", $projectName);
-
         $hostsContents = file_get_contents($hostsFile);
+
         if ($hostsContents === false) {
             $style->error('Could not read hosts file.');
+
             return Command::FAILURE;
         }
 
@@ -84,6 +87,7 @@ class AddHostsEntryCommand extends Command
 
         if (in_array($entry, $existingEntries, true)) {
             $style->info("Hosts entry already exists for {$projectName}.app");
+
             return Command::SUCCESS;
         }
 

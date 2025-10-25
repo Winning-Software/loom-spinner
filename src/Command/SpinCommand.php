@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Loom\Spinner\Command;
 
-use Loom\Spinner\Classes\Config\Config;
 use Loom\Spinner\Classes\File\DockerComposeFileBuilder;
 use Loom\Spinner\Classes\File\NginxConfigFileBuilder;
 use Loom\Spinner\Classes\File\NginxDockerFileBuilder;

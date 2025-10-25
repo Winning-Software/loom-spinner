@@ -153,7 +153,7 @@ class Config
     }
 
     /**
-     * @return array<string, array<string, boolean|float|int|string>>|null
+     * @return array<string, array<string, bool|float|int|string>>|null
      */
     public function getProjectCustomConfig(): ?array
     {
@@ -165,7 +165,7 @@ class Config
     }
 
     /**
-     * @return array<string, array<string, boolean|float|int|string>>|null
+     * @return array<string, array<string, bool|float|int|string>>|null
      */
     protected function getDefaultConfig(): ?array
     {
@@ -173,7 +173,7 @@ class Config
     }
 
     /**
-     * @return array<string, array<string, boolean|float|int|string>>|null
+     * @return array<string, array<string, bool|float|int|string>>|null
      */
     private function getParsedEnvironment(string $path): ?array
     {
@@ -184,7 +184,7 @@ class Config
         }
 
         /**
-         * @var array<string, array<string, boolean|float|int|string>> $environment
+         * @var array<string, array<string, bool|float|int|string>> $environment
          */
         $environment = $parsedFile['options']['environment'];
 
