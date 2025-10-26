@@ -1,11 +1,11 @@
 # Loom Spinner CLI
 
-<div>
+<p>
 <!-- Version Badge -->
-<img src="https://img.shields.io/badge/Version-3.2.4-blue" alt="Version 3.2.4">
+<img src="https://img.shields.io/badge/Version-3.3.0-blue" alt="Version 3.3.0">
 <!-- License Badge -->
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-40adbc" alt="License GPL-3.0-or-later">
-</div>
+</p>
 
 Loom Spinner is a streamlined environment management tool for PHP developers.
 
@@ -19,12 +19,12 @@ Run simple commands from anywhere on your system to manage your environments.
 
 # At a Glance
 
-Effortlessly create custom Docker environments for each of your PHP projects. Out of the box, Loom Spinner provides:
+Effortlessly create custom Docker environments for each of your PHP projects. A default Loom Spinner environment provides:
 
 - **PHP 8.4** (with XDebug & OpCache)
 - **Nginx**
 - **MySQL 9.3**
-- **NodeJS 23** (Node, NPM, & NPX)
+- **NodeJS 25** (Node, NPM, & NPX)
 
 Your project directory is automatically mounted into the PHP container, and the `public` directory is served via Nginx at:
 

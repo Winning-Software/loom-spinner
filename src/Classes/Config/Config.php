@@ -57,11 +57,15 @@ class Config
 
     public function getPhpVersion(InputInterface $input): float
     {
-        if ($input->getOption('php')) {
-            return (float) $input->getOption('php');
+        $phpVersion = $input->getOption('php');
+
+        if (is_string($phpVersion) && is_numeric($phpVersion)) {
+            return (float) $phpVersion;
         }
 
-        return (float) $this->getEnvironmentOption('php', 'version');
+        $defaultPhpVersion = $this->getEnvironmentOption('php', 'version');
+
+        return is_string($defaultPhpVersion) ? (float) $defaultPhpVersion : 8.4;
     }
 
     /**
@@ -73,7 +77,7 @@ class Config
             return false;
         }
 
-        return $this->getEnvironmentOption('server', 'enabled');
+        return (bool) $this->getEnvironmentOption('server', 'enabled');
     }
 
     /**
@@ -85,7 +89,7 @@ class Config
             return false;
         }
 
-        return $this->getEnvironmentOption('php', 'xdebug');
+        return (bool) $this->getEnvironmentOption('php', 'xdebug');
     }
 
     /**
@@ -105,23 +109,36 @@ class Config
      */
     public function getDatabaseDriver(InputInterface $input): ?string
     {
-        if ($input->getOption('database')) {
-            return (string) $input->getOption('database');
+        $databaseDriver = $input->getOption('database') ?? null;
+
+        if (is_string($databaseDriver)) {
+            return $databaseDriver;
         }
 
-        return (string) $this->getEnvironmentOption('database', 'driver');
+        $defaultDatabaseDriver = $this->getEnvironmentOption('database', 'driver');
+
+        if (is_string($defaultDatabaseDriver)) {
+            return $defaultDatabaseDriver;
+        }
+
+        return null;
     }
 
-    /**
-     * @throws \Exception
-     */
     public function getNodeVersion(InputInterface $input): ?int
     {
-        if ($input->getOption('node')) {
-            return (int) $input->getOption('node');
+        $nodeVersion = $input->getOption('node') ?? null;
+
+        if (is_numeric($nodeVersion)) {
+            return (int) $nodeVersion;
         }
 
-        return (int) $this->getEnvironmentOption('node','version');
+        $defaultNodeVersion = $this->getEnvironmentOption('node', 'version');
+
+        if (is_numeric($defaultNodeVersion)) {
+            return (int) $defaultNodeVersion;
+        }
+
+        return null;
     }
 
     public function getEnvironmentOption(string $service, string $option): mixed
@@ -136,24 +153,42 @@ class Config
     }
 
     /**
-     * @return array<string, array<string, boolean|float|int|string>>|null
+     * @return array<string, array<string, bool|float|int|string>>|null
      */
     public function getProjectCustomConfig(): ?array
     {
         if ($this->projectWorkPath && file_exists($configFilePath = $this->getConfigYamlPath())) {
-            return Yaml::parseFile($configFilePath)['options']['environment'];
+            return $this->getParsedEnvironment($configFilePath);
         }
 
         return null;
     }
 
     /**
-     * @return array<string, array<string, boolean|float|int|string>>|null
+     * @return array<string, array<string, bool|float|int|string>>|null
      */
     protected function getDefaultConfig(): ?array
     {
-        return Yaml::parseFile($this->getConfigYamlPath())['options']['environment']
-            ?? null;
+        return $this->getParsedEnvironment($this->getConfigYamlPath());
+    }
+
+    /**
+     * @return array<string, array<string, bool|float|int|string>>|null
+     */
+    private function getParsedEnvironment(string $path): ?array
+    {
+        $parsedFile = Yaml::parseFile($path);
+
+        if (!is_array($parsedFile) || !isset($parsedFile['options']) || !is_array($parsedFile['options']) || !isset($parsedFile['options']['environment']) || !is_array($parsedFile['options']['environment'])) {
+            return null;
+        }
+
+        /**
+         * @var array<string, array<string, bool|float|int|string>> $environment
+         */
+        $environment = $parsedFile['options']['environment'];
+
+        return $environment;
     }
 
     private function getHomeDirectory(): string

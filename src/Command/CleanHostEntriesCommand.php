@@ -33,7 +33,7 @@ class CleanHostEntriesCommand extends Command
         if (function_exists('posix_getuid') && posix_getuid() !== 0) {
             $scriptPath = $_SERVER['PHP_SELF'] ?? $_SERVER['SCRIPT_FILENAME'] ?? null;
             
-            if ($scriptPath && file_exists($scriptPath)) {
+            if (is_string($scriptPath) && file_exists($scriptPath)) {
                 $style->warning('This command requires elevated privileges.');
                 $style->note('Attempting to re-run with sudo...');
                 
@@ -46,10 +46,12 @@ class CleanHostEntriesCommand extends Command
                 );
                 
                 passthru($command, $exitCode);
+
                 return $exitCode;
             }
             
             $style->error('Please re-run this command with sudo.');
+
             return Command::FAILURE;
         }
 
@@ -70,11 +72,13 @@ class CleanHostEntriesCommand extends Command
         $hostsContents = file_get_contents($hostsFile);
         if ($hostsContents === false) {
             $style->error('Could not read hosts file.');
+
             return Command::FAILURE;
         }
 
         if (!str_contains($hostsContents, $sectionHeader)) {
             $style->info('No Spinner managed hosts entries found.');
+
             return Command::SUCCESS;
         }
 
@@ -83,6 +87,7 @@ class CleanHostEntriesCommand extends Command
         
         if ($sectionIndex === false) {
             $style->info('No Spinner managed hosts entries found.');
+
             return Command::SUCCESS;
         }
 
@@ -94,6 +99,7 @@ class CleanHostEntriesCommand extends Command
 
             if ($line === '' || (str_starts_with($line, '#') && $line !== $sectionHeader)) {
                 $endOfSection = $i;
+
                 break;
             }
 
@@ -112,6 +118,7 @@ class CleanHostEntriesCommand extends Command
 
         if (empty($entriesToRemove)) {
             $style->success('No orphaned hosts entries found. Everything is clean!');
+
             return Command::SUCCESS;
         }
 
@@ -128,6 +135,7 @@ class CleanHostEntriesCommand extends Command
                 count($entriesToRemove),
                 count($entriesToRemove) === 1 ? 'entry' : 'entries'
             ));
+
             return Command::SUCCESS;
         }
 
@@ -147,6 +155,7 @@ class CleanHostEntriesCommand extends Command
                 }
                 if (!empty($line)) {
                     $hasEntries = true;
+
                     break;
                 }
             }
@@ -157,8 +166,9 @@ class CleanHostEntriesCommand extends Command
             }
         }
 
-        if (file_put_contents($hostsFile,implode(PHP_EOL, $lines) . PHP_EOL, LOCK_EX) === false) {
+        if (file_put_contents($hostsFile, implode(PHP_EOL, $lines) . PHP_EOL, LOCK_EX) === false) {
             $style->error('Failed to write to hosts file.');
+
             return Command::FAILURE;
         }
 

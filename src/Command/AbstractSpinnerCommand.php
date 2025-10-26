@@ -53,4 +53,19 @@ class AbstractSpinnerCommand extends Command implements ConsoleCommandInterface
     {
         $this->style = new SymfonyStyle($input, $output);
     }
+
+    protected function setConfig(InputInterface $input, ?string $workPath = null): void
+    {
+        $projectName = $input->getArgument('name');
+
+        if (!is_string($projectName)) {
+            throw new \UnexpectedValueException('Project name must be a string.');
+        }
+
+        if ($workPath) {
+            $this->config = new Config($projectName, $workPath);
+        } else {
+            $this->config = new Config($projectName);
+        }
+    }
 }

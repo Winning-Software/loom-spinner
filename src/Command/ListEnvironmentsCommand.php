@@ -40,29 +40,44 @@ class ListEnvironmentsCommand extends AbstractSpinnerCommand
 
             $projectDockerCompose = Yaml::parseFile(sprintf('%s/docker-compose.yaml', $projectPath));
 
-            $volumes = $projectDockerCompose['services']['nginx']['volumes'] ?? [];
+            if (!is_array($projectDockerCompose)) continue;
+
+            $serviceConfig = $projectDockerCompose['services'] ?? null;
+
+            if (!is_array($serviceConfig)) {
+                continue;
+            }
+
+            $volumes = array_key_exists('nginx', $serviceConfig) && is_array($serviceConfig['nginx'])
+                ? $serviceConfig['nginx']['volumes']
+                : [];
             $usesSqlite = false;
 
-            foreach ($volumes as $volume) {
-                if (str_contains($volume, 'sqlite')) {
-                    $usesSqlite = true;
+            if (is_array($volumes) && count($volumes)) {
+                foreach ($volumes as $volume) {
+                    if (!is_string($volume)) continue;
+
+                    if (str_contains($volume, 'sqlite')) {
+                        $usesSqlite = true;
+                    }
                 }
             }
 
+            $databasePort = is_string($_ENV['DATABASE_PORT']) ? $_ENV['DATABASE_PORT'] : 3306;
             $outputData[] = [
                 'Environment' => $file,
                 'PHP Version' => $_ENV['PHP_VERSION'],
-                'Server' => array_key_exists('nginx', $projectDockerCompose['services'])
+                'Server' => array_key_exists('nginx', $serviceConfig)
                     ? '<fg=green>Nginx</>'
                     : '<fg=red>N/A</>',
-                'Database' => array_key_exists('mysql', $projectDockerCompose['services'])
-                    ? sprintf('MySQL (%d)', $_ENV['DATABASE_PORT'])
+                'Database' => array_key_exists('mysql', $serviceConfig)
+                    ? sprintf('MySQL (%d)', $databasePort)
                     : ($usesSqlite? 'SQLite' : '<fg=red>N/A</>'),
                 'Status' => $this->system->isDockerContainerRunning($file)
                     ? '<fg=green>On</>'
                     : '<fg=red>Off</>',
-                'URL' => array_key_exists('nginx', $projectDockerCompose['services'])
-                    ? sprintf('<fg=green>http://%s.app</>', $file)
+                'URL' => array_key_exists('nginx', $serviceConfig)
+                    ? sprintf('<fg=green>https://%s.app</>', $file)
                     : '<fg=red>N/A</>',
             ];
         }

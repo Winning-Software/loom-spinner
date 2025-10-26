@@ -37,7 +37,7 @@ class PHPDockerFileBuilder extends AbstractFileBuilder
                 $this->content .= $this->config->getConfigFileContents('php-fpm/Sqlite.Dockerfile');
             }
 
-            if ($this->config->getDatabaseDriver($input) ==='mysql') {
+            if ($this->config->getDatabaseDriver($input) === 'mysql') {
                 $this->addNewLine();
                 $this->content .= $this->config->getConfigFileContents('php-fpm/MySQL.Dockerfile');
             }

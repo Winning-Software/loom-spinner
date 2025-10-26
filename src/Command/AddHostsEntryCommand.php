@@ -28,10 +28,16 @@ class AddHostsEntryCommand extends Command
         $style = new SymfonyStyle($input, $output);
         $projectName = $input->getArgument('name');
 
+        if (!is_string($projectName)) {
+            $style->error('Project name must be a string.');
+
+            return Command::FAILURE;
+        }
+
         if (function_exists('posix_getuid') && posix_getuid() !== 0) {
             $scriptPath = $_SERVER['PHP_SELF'] ?? $_SERVER['SCRIPT_FILENAME'] ?? null;
             
-            if ($scriptPath && file_exists($scriptPath)) {
+            if (is_string($scriptPath) && file_exists($scriptPath)) {
                 $style->warning('This command requires elevated privileges.');
                 $style->note('Attempting to re-run with sudo...');
                 
@@ -44,20 +50,23 @@ class AddHostsEntryCommand extends Command
                 );
                 
                 passthru($command, $exitCode);
+
                 return $exitCode;
             }
             
             $style->error('Please re-run this command with sudo.');
+
             return Command::FAILURE;
         }
 
         $hostsFile = '/etc/hosts';
         $sectionHeader = "# Spinner Managed Environments";
         $entry = sprintf("127.0.0.1 %s.app", $projectName);
-
         $hostsContents = file_get_contents($hostsFile);
+
         if ($hostsContents === false) {
             $style->error('Could not read hosts file.');
+
             return Command::FAILURE;
         }
 
@@ -78,6 +87,7 @@ class AddHostsEntryCommand extends Command
 
         if (in_array($entry, $existingEntries, true)) {
             $style->info("Hosts entry already exists for {$projectName}.app");
+
             return Command::SUCCESS;
         }
 

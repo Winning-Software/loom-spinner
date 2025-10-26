@@ -31,6 +31,7 @@ class ProjectNginxConfigFileBuilder extends AbstractFileBuilder
         }
 
         $this->content = str_replace('{{PROJECT_NAME}}', $this->projectName, $content);
+
         return $this;
     }
 }
