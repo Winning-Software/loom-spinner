@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.0] - 2025-10-26
+### Changed
+- Improved output when running `spin:down` command.
+- Now removes Nginx config and SSL certificates when destroying environments (if they exist).
+- Now prompts the user to run the `env:hosts:clean` command if they want to remove host entries after running
+  `spin:down`.
+- Default Node version is now 25.
+- Added PHP CS Fixer and refactored areas of the codebase for consistent code styles.
+- Increased PHP Stan to max level for stricter static analysis and improved code quality.
+- Added PHP CS Fixer to the CI workflow.
+
 ## [3.2.4] - 2025-10-25
 ### Fixed
 - Force PHP containers to be recreated to ensure that the selected PHP version is used.
